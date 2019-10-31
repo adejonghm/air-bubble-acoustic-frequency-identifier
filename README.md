@@ -1,4 +1,6 @@
-Repository to control versions of my code developed in my master's degree.
+[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128)
+
+### Repository to control versions of my code developed in my master's degree.
 
 The following notebooks are found in the master branch:
 1. bubble_simulation: This notebook is the simulation of a acoustic signal emission of a bubble in liquid using the model of Strasberg.
