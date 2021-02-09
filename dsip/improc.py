@@ -63,7 +63,7 @@ def get_centroid(image: ndarray) -> tuple:
     return (cX, cY)
 
 
-def get_main_bubble(image: ndarray, coord: list, sigmaX: float, flag: bool)-> ndarray:#, ab_blw: int) -> ndarray:
+def get_main_bubble(image: ndarray, coord: list, sigmaX: float, flag: bool, iteration: int)-> ndarray:
     """Select the main bubble in the image based on its position.
 
     Args:
@@ -80,13 +80,16 @@ def get_main_bubble(image: ndarray, coord: list, sigmaX: float, flag: bool)-> nd
     # FIND CONTOURS
     contours = measure.find_contours(image, 0)
     y_min = min(contours[0][:, 0])
+    y_max = max(contours[0][:, 0])
 
-    if flag and y_min == 6:
+    if flag and y_min < 8:
         flag = False
-    else:
+
+    if not flag and y_max >= 190:
+        iteration += 1
         flag = True
 
-    return flag, image
+    return (iteration, flag, image)
 
 
 def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:

@@ -103,13 +103,13 @@ if __name__ == "__main__":
         potential_function = 'double-well'
 
     ## Selector to decide which bubble is taken
-    flowing = False
+    flowing = True
 
     ##
-    selected = 0
+    selected = 1
 
     #### START PROCESSING ####
-    for i in range(total_frames): #1644, 1646
+    for i in range(260, 315):#total_frames): #1644, 1646
 
         #### LOADING IMAGE ####
         full_name_frame = frames[i]
@@ -157,54 +157,50 @@ if __name__ == "__main__":
             (_, bw_image) = cv.threshold(final_LSF, 0, 255, cv.THRESH_BINARY_INV)
 
             #### DETECTING BUBBLE ####
-            flowing, bw_image = dip.get_main_bubble(bw_image, area_coord, sigma, flowing)
+            (selected, flowing, bw_image) = dip.get_main_bubble(bw_image, area_coord,
+                                                                sigma, flowing, selected)
 
-            if not flowing:
-                selected += 1
+            if flowing:
+                #### SAVE IMAGE WITH DRLSE ####
+                dip.get_image_contours(smoothed_img, final_LSF)
+                plt.axis(False)
+                plt.savefig(f"{segmented_frames_path}{full_name_frame}",
+                            bbox_inches='tight', pad_inches=0)#, dpi=65.5)
+                plt.close()
 
-            #### SAVE IMAGE WITH DRLSE ####
-            dip.get_image_contours(smoothed_img, final_LSF)
-            plt.axis(False)
-            plt.savefig('{}{}'.format(segmented_frames_path, full_name_frame),
-                        bbox_inches='tight', pad_inches=0)#, dpi=65.5)
-            plt.close()
+                #### SAVE BINARY IMAGE ####
+                cv.imwrite(f"{bw_frames_path}{short_name_frame}-{selected}.jpg", bw_image)
+                # # plt.imsave(f"{bw_frames_path}{full_name_frame}", bw_image)
 
-            #### SAVE BINARY IMAGE ####
-            cv.imwrite("{}{}".format(bw_frames_path, full_name_frame), bw_image)
-            # # plt.imsave("{}{}".format(bw_frames_path, full_name_frame), bw_image)
+                #### FOURIER DESCRIPTORS & CENTROID ####
+                square_image = dip.center_bubble(bw_image)
+                fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
+                cX, cY = dip.get_centroid(bw_image)
 
-            #### FOURIER DESCRIPTORS & CENTROID ####
-            square_image = dip.center_bubble(bw_image)
-            fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
-            cX, cY = dip.get_centroid(bw_image)
+                # plt.figure(figsize=(7, 4))
+                # plt.title(f'Desc. de Fourier da imagen {short_name_frame}, vocal {diameter}mm')
+                # plt.yticks(np.arange(0, 1, 0.05))
+                # plt.xticks(np.arange(0, 14, 1))
+                # plt.stem(fd_bubble, use_line_collection=True)
+                # plt.show(block=False)
+                # plt.pause(1)
+                # plt.close()
 
-            # plt.figure(figsize=(7, 4))
-            # plt.title('Desc. de Fourier da imagen {}, vocal {}mm'.
-            #           format(short_name_frame, diameter))
-            # plt.yticks(np.arange(0, 1, 0.05))
-            # plt.xticks(np.arange(0, 14, 1))
-            # plt.stem(fd_bubble, use_line_collection=True)
-            # plt.show(block=False)
-            # plt.pause(1)
-            # plt.close()
+                #### VOLUME CALCULATION ####
+                volume = dip.get_bubble_volume(bw_image, 0.3846)
 
-            #### VOLUME CALCULATION ####
-            volume = dip.get_bubble_volume(bw_image, 0.3846)
-
-            #### SHOW MESSAGE ####
-            print(f'Diameter {diameter}mm, Image {short_name_frame}', selected)
-            # print("")
-            # print("|-----------------| RESULT OF IMG {} |-------------------|".
-            #       format(short_name_frame))
-            # print('| Diameter of the nozzle: {} mm\t\t\t\t    |'.format(diameter))
-            # print('| Image volume is: {} mm^3\t\t\t\t    |'.
-            #       format(round(volume, 2)))
-            # print('| Image segmented and successfully saved as binary.\t    |')
-            # print('| Centroid coordinates are: ({}, {})\t\t    |'.
-            #       format(round(cX, 1), round(cY, 1)))
-            # print('| The sum of FD is: {} and the total of FD is: {} |'.
-            #       format(sum(fd_bubble), len(fd_bubble)))
-            # print('|-----------------------------------------------------------|')
+                #### SHOW MESSAGE ####
+                print(f'Diameter {diameter}mm',
+                      f'Image {short_name_frame}-{selected}')
+                # print("")
+                # print(f'|-----------------| RESULT OF IMG {short_name_frame} |-------------------|')
+                # print(f'| Diameter of the nozzle: {diameter} mm\t\t\t\t    |')
+                # print(f'| Image volume is: {round(volume, 2)} mm^3\t\t\t\t    |')
+                # print('| Image segmented and successfully saved as binary.\t    |')
+                # print(f'| Centroid coordinates are: ({round(cX, 1)}, {round(cY, 1)})\t\t    |')
+                # print(f'| The sum of FD is: {sum(fd_bubble)} and',
+                #     f'the total of FD is: {len(fd_bubble)} |')
+                # print('|-----------------------------------------------------------|')
         else:
             pass
 
