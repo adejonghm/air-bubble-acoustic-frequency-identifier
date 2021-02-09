@@ -19,7 +19,7 @@ import argparse
 from scipy.io import wavfile
 
 # Local application imports
-import package.dsplib as dsp
+import dsip.sigproc as dsp
 
 
 if __name__ == "__main__":

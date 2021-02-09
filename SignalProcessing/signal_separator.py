@@ -22,7 +22,7 @@ from scipy import signal
 from scipy.io import wavfile
 
 # Local application imports
-import package.dsplib as dsp
+import dsip.sigproc as dsp
 
 
 # Setting Plot parameters

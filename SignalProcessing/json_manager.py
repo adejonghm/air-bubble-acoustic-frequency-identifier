@@ -18,7 +18,7 @@ from datetime import datetime, date
 # Third party imports
 
 # Local application imports
-import package.jilib as jm
+import dsip.jilib as jm
 
 
 if __name__ == "__main__":

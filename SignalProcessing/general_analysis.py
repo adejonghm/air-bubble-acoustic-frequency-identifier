@@ -23,7 +23,7 @@ from scipy.io import wavfile
 from scipy.fftpack import fft, fftfreq
 
 # Local application imports
-import package.dsplib as dsp
+import dsip.sigproc as dsp
 
 # Setting Plot parameters
 plt.rcParams['lines.linewidth'] = 1
