@@ -21,7 +21,6 @@ import numpy as np
 # Local application imports
 from dsip import improc as dip
 from dsip.drlse import drlse_edge
-from dsip.gfd import generic_fourier_descriptor
 
 
 if __name__ == "__main__":
@@ -106,10 +105,10 @@ if __name__ == "__main__":
     flowing = True
 
     ##
-    selected = 1
+    selected = 21
 
     #### START PROCESSING ####
-    for i in range(260, 315):#total_frames): #1644, 1646
+    for i in range(1): #1644, 1646
 
         #### LOADING IMAGE ####
         full_name_frame = frames[i]
@@ -172,35 +171,9 @@ if __name__ == "__main__":
                 cv.imwrite(f"{bw_frames_path}{short_name_frame}-{selected}.jpg", bw_image)
                 # # plt.imsave(f"{bw_frames_path}{full_name_frame}", bw_image)
 
-                #### FOURIER DESCRIPTORS & CENTROID ####
-                square_image = dip.center_bubble(bw_image)
-                fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
-                cX, cY = dip.get_centroid(bw_image)
-
-                # plt.figure(figsize=(7, 4))
-                # plt.title(f'Desc. de Fourier da imagen {short_name_frame}, vocal {diameter}mm')
-                # plt.yticks(np.arange(0, 1, 0.05))
-                # plt.xticks(np.arange(0, 14, 1))
-                # plt.stem(fd_bubble, use_line_collection=True)
-                # plt.show(block=False)
-                # plt.pause(1)
-                # plt.close()
-
-                #### VOLUME CALCULATION ####
-                volume = dip.get_bubble_volume(bw_image, 0.3846)
-
                 #### SHOW MESSAGE ####
-                print(f'Diameter {diameter}mm',
-                      f'Image {short_name_frame}-{selected}')
-                # print("")
-                # print(f'|-----------------| RESULT OF IMG {short_name_frame} |-------------------|')
-                # print(f'| Diameter of the nozzle: {diameter} mm\t\t\t\t    |')
-                # print(f'| Image volume is: {round(volume, 2)} mm^3\t\t\t\t    |')
-                # print('| Image segmented and successfully saved as binary.\t    |')
-                # print(f'| Centroid coordinates are: ({round(cX, 1)}, {round(cY, 1)})\t\t    |')
-                # print(f'| The sum of FD is: {sum(fd_bubble)} and',
-                #     f'the total of FD is: {len(fd_bubble)} |')
-                # print('|-----------------------------------------------------------|')
+                print(f'Diameter: {diameter} mm., Image {short_name_frame}-{selected}')
+                print('Image segmented and successfully saved as binary.')
         else:
             pass
 
