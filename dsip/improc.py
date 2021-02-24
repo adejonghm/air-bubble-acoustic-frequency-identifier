@@ -63,33 +63,63 @@ def get_centroid(image: ndarray) -> tuple:
     return (cX, cY)
 
 
-def get_main_bubble(image: ndarray, coord: list, sigmaX: float, flag: bool, iteration: int)-> ndarray:
-    """Select the main bubble in the image based on its position.
+def get_main_bubble(image: ndarray, flag: bool, iteration: int)-> ndarray:
+    """Select the main bubble in the image based on its size.
 
     Args:
         image (ndarray): Grayscale Image with one channel.
-        coord (list): Coordinates of the selected area.
-        sigmaX (float): Gaussian kernel standard deviation.
         flag (bool): Selector to decide which bubble is taken.
-        ab_blw (int): above(1), below(2)
+        iteration (int): The number of the bubble used to rename the binary image.
 
     Returns:
-        ndarray: A new image with main object.
+        ndarray: A new image with the main object.
     """
 
-    # FIND CONTOURS
     contours = measure.find_contours(image, 0)
-    y_min = min(contours[0][:, 0])
-    y_max = max(contours[0][:, 0])
+    lengths = [len(item) for i, item in enumerate(contours)]
+    index = lengths.index(max(lengths))
 
+    # GET THE OBJECT
+    bub = contours[index].astype(int)
+    y_min, y_max = min(bub[:, 0]), max(bub[:, 0])
+    x_min, x_max = min(bub[:, 1]), max(bub[:, 1])
+
+    # RELEASING THE FLAG WHEN THE BUBBLE REACHES THE TOP
     if flag and y_min < 8:
         flag = False
 
+    # INCREASING THE NUMBER OF THE BUBBLE WHEN IT STARTS AGAIN
     if not flag and y_max >= 190:
         iteration += 1
         flag = True
 
-    return (iteration, flag, image)
+    # CREATE THE NEW IMAGE WITH THE OBJECT
+    new_image = np.zeros_like(image)
+    new_image[y_min:y_max, x_min:x_max] = image[y_min:y_max, x_min:x_max]
+
+    return (iteration, flag, new_image)
+
+
+def get_bubble_volume(image: ndarray, scale_factor: float) -> float:
+    """Calculate the volume of the bubble that appears in the image.
+    The volume is calculated in each row of the image, using the
+    scale_factor parameter as the height in the equation.
+
+    Args:
+        image (ndarray): Image as Numpy Array with one chanel.
+        scale_factor (float): Convection value of 1 pixel in millimeters.
+
+    Returns:
+        float: Volume of the bubble.
+    """
+
+    volume = 0
+    for px in range(image.shape[0]):
+        if 255 in image[px]:
+            radius = (np.count_nonzero(image[px] == 255) / 2) * scale_factor
+            volume += pi * (radius ** 2) * scale_factor
+
+    return volume
 
 
 def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:
@@ -156,28 +186,6 @@ def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:
 
     # RETURN THE NEW IMAGE WITH THE BUBBLES
     return cv.GaussianBlur(new_image, (5, 5), sigmaX)
-
-
-def get_bubble_volume(image: ndarray, scale_factor: float) -> float:
-    """Calculate the volume of the bubble that appears in the image.
-    The volume is calculated in each row of the image, using the
-    scale_factor parameter as the height in the equation.
-
-    Args:
-        image (ndarray): Image as Numpy Array with one chanel.
-        scale_factor (float): Convection value of 1 pixel in millimeters.
-
-    Returns:
-        float: Volume of the bubble.
-    """
-
-    volume = 0
-    for px in range(image.shape[0]):
-        if 255 in image[px]:
-            radius = (np.count_nonzero(image[px] == 255) / 2) * scale_factor
-            volume += pi * (radius ** 2) * scale_factor
-
-    return volume
 
 
 def detect_bubble(image: ndarray) -> int:
