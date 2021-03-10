@@ -12,6 +12,7 @@ Dev: 	adejonghm
 import argparse
 import json
 import os
+from math import pi
 
 # Third party imports
 import cv2 as cv
@@ -48,18 +49,21 @@ if __name__ == "__main__":
     backg = cv.imread(backg_path, 0)
 
     # node data
-    node = dataset[3]
+    node = dataset[2]
     node_path = db_path + node['path']
     diameter = node['diameter']
     bw_frames_path = node_path + node['bwFramesPath']
     frames = sorted(os.listdir(bw_frames_path))
-    total_frames = len(frames)
+    total_frames = [1]
+    volumes = []
+    radii = []
 
-    for i in range(1):
+
+    for i in total_frames:
 
         #### LOADING IMAGE ####
-        full_name_frame = frames[i]
-        short_name_frame = full_name_frame.split('.')[0].split('-')[0]
+        full_name_frame = frames[i-1]
+        short_name_frame = full_name_frame.split('.')[0].split('-')[1]
 
         frame = cv.imread(bw_frames_path + full_name_frame, 0)
         _, bw_image = cv.threshold(frame, 200, 255, cv.THRESH_BINARY)
@@ -74,24 +78,31 @@ if __name__ == "__main__":
         fig.suptitle(f'Desc. de Fourier da imagen {short_name_frame}, bico {diameter}mm',
                      fontsize=15)
 
-        a.imshow(bw_image)
-        a.axis(False)
+        # a.imshow(bw_image)
+        # a.axis(False)
 
-        b.set_yticks(np.arange(0, 1, 0.05))
-        b.set_xticks(np.arange(0, 14, 1))
-        b.stem(fd_bubble, use_line_collection=True)
+        # b.set_yticks(np.arange(0, 1, 0.05))
+        # b.set_xticks(np.arange(0, 14, 1))
+        # b.stem(fd_bubble, use_line_collection=True)
 
-        plt.show()
+        # # plt.show()
         # plt.show(block=False)
-        # plt.pause(1)
+        # plt.pause(2)
         # plt.close()
 
         #### VOLUME CALCULATION ####
-        volume = dip.get_bubble_volume(bw_image, 0.3846)
+        vol = dip.get_bubble_volume(bw_image, 0.3846)
+        radius = pow((3 * vol) / (4 * pi), 1/3)
 
-        print(
-            f'|-----------------| RESULT OF IMG {short_name_frame} |-----------------|')
-        print(f' Image volume is: {round(volume, 2)} mm^3')
-        print(f' Centroid coordinates are: ({round(cX, 1)}, {round(cY, 1)})')
-        print(f' The sum of FD is: {sum(fd_bubble)} and the total of FD is: {len(fd_bubble)}')
-        print('|-----------------------------------------------------------|')
+        radii.append(round(radius, 2))
+        volumes.append(round(vol, 2))
+
+        # print(
+        #     f'|-----------------| RESULT OF IMG {short_name_frame} |------------------|')
+        # print(f' Image volume is: {vol} mm^3')
+        # print(f' Centroid coordinates are: ({round(cX, 1)}, {round(cY, 1)})')
+        # print(f' The sum of FD is: {sum(fd_bubble)} and the total of FD is: {len(fd_bubble)}')
+        # print('|----------------------------------------------------------|')
+
+    print('volume:', volumes)
+    print('radius:', radii)
