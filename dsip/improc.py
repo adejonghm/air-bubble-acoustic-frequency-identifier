@@ -63,7 +63,7 @@ def get_centroid(image: ndarray) -> tuple:
     return (cX, cY)
 
 
-def get_main_bubble(image: ndarray, flag: bool, iteration: int)-> ndarray:
+def get_main_bubble(image: ndarray, flag: bool, iteration: int) -> ndarray:
     """Select the main bubble in the image based on its size.
 
     Args:
@@ -76,6 +76,7 @@ def get_main_bubble(image: ndarray, flag: bool, iteration: int)-> ndarray:
     """
 
     contours = measure.find_contours(image, 0)
+    print(len(contours))
     lengths = [len(item) for i, item in enumerate(contours)]
     index = lengths.index(max(lengths))
 
@@ -85,6 +86,9 @@ def get_main_bubble(image: ndarray, flag: bool, iteration: int)-> ndarray:
     x_min, x_max = min(bub[:, 1]), max(bub[:, 1])
 
     # RELEASING THE FLAG WHEN THE BUBBLE REACHES THE TOP
+    lengths = [len(item) for i, item in enumerate(contours)]
+    print(lengths)
+    y_min, y_max = min(contours[0][:, 0]), max(contours[0][:, 0])
     if flag and y_min < 8:
         flag = False
 
@@ -98,6 +102,20 @@ def get_main_bubble(image: ndarray, flag: bool, iteration: int)-> ndarray:
     new_image[y_min:y_max, x_min:x_max] = image[y_min:y_max, x_min:x_max]
 
     return (iteration, flag, new_image)
+
+
+def get_number_of_bubble(image: ndarray) -> int:
+    """Get the number of bubbles in a image
+
+    Args:
+        image (ndarray): Grayscale input image with a single channel.
+
+    Returns:
+        int: Number of bubble in the image.
+    """
+
+    contours = measure.find_contours(image, 0)
+    return len(contours)
 
 
 def get_bubble_volume(image: ndarray, scale_factor: float) -> float:
@@ -139,53 +157,19 @@ def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:
 
     # FIND CONTOURS
     contours = measure.find_contours(smoothed_image, 0)
+    lengths = [len(item) for i, item in enumerate(contours)]
 
     # CREATE NEW IMAGE WITH MAIN BUBBLE
     new_image = np.zeros_like(image)
 
-    # CREATE FLOW AREA FROM COORDINATES
+    # GET DELIMITERS FROM THE FLOW AREA
     y_min, y_max, x_min, x_max = coord[0], coord[1], coord[2], coord[3]
-    flow_area = []
-    for j in range(y_min, y_max):
-        for k in range(x_min, x_max):
-            flow_area.append([j, k])
-    flow_area = np.array(flow_area)
 
-    # FIND TWO BIGGEST BUBBLE
-    fst_biggest_bubble_length = snd_biggest_bubble_length = 0
-    fst_biggest_bubble = []
-    snd_biggest_bubble = []
-
-    for i, item in enumerate(contours):
-        if len(item) > fst_biggest_bubble_length:
-            snd_biggest_bubble = fst_biggest_bubble.copy()
-            fst_biggest_bubble = item
-
-            snd_biggest_bubble_length = fst_biggest_bubble_length
-            fst_biggest_bubble_length = len(item)
-
-        elif (len(item) > snd_biggest_bubble_length) and (len(item) != fst_biggest_bubble_length):
-            snd_biggest_bubble = item
-            snd_biggest_bubble_length = len(item)
-
-    # VERIFY IF THE BUBBLES WITHIN THE AREA
-    one_biggest_yes = np.isin(fst_biggest_bubble, flow_area).all()
-    two_biggest_yes = np.isin(snd_biggest_bubble, flow_area).all()
-
-    if one_biggest_yes and two_biggest_yes:
-        # print('1ra y 2da burbujas')
-        new_image[y_min: y_max, x_min:x_max] = image[y_min: y_max, x_min:x_max]
-
-    elif one_biggest_yes or two_biggest_yes:
-        # print('1ra mas grande o 2da mas grande')
-        new_image[y_min: y_max, x_min:x_max] = image[y_min: y_max, x_min:x_max]
-
+    if any(i >= 70 for i in lengths):
+        new_image[y_min:y_max, x_min:x_max] = image[y_min:y_max, x_min:x_max]
+        return cv.GaussianBlur(new_image, (5, 5), sigmaX)
     else:
-        # print('Ninguna burbuja')
-        new_image
-
-    # RETURN THE NEW IMAGE WITH THE BUBBLES
-    return cv.GaussianBlur(new_image, (5, 5), sigmaX)
+        return np.zeros_like(image)
 
 
 def detect_bubble(image: ndarray) -> int:
@@ -198,11 +182,11 @@ def detect_bubble(image: ndarray) -> int:
         int: Number of object on the image.
     """
 
-    number_of_objects = len(measure.find_contours(image, 0))
-    if number_of_objects == 0:
+    number_of_obj = len(measure.find_contours(image, 0))
+    if number_of_obj == 0:
         return 0
     else:
-        return number_of_objects
+        return number_of_obj
 
 
 def center_bubble(image: ndarray) -> ndarray:

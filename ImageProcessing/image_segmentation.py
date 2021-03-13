@@ -105,14 +105,14 @@ if __name__ == "__main__":
     flowing = True
 
     ##
-    selected = 21
+    selected = 1
 
     #### START PROCESSING ####
-    for i in range(1): #1644, 1646
+    for i in range(total_frames):
 
         #### LOADING IMAGE ####
         full_name_frame = frames[i]
-        short_name_frame = full_name_frame.split('.')[0]
+        short_name_frame, _ = full_name_frame.split('.')
         frame = cv.imread(frames_path + full_name_frame, 0)
 
         #### REMOVIMG BACKGROUND ####
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                                  epsilon, timestep, iter_inner, potential_function, alpha)
                 # if np.mod(k, 2) == 0:
                 #     plt.clf()
-                #     dip.get_image_contours(smoothed_img, phi, fig_title=short_name_frame)
+                #     dip.get_image_contours(img, phi, fig_title=short_name_frame)
                 #     plt.pause(0.1)
 
             #### REFINE THE ZERO LEVEL CONTOUR BY FURTHER LEVEL SET EVOLUTION WITH (alpha=0) ####
@@ -156,11 +156,10 @@ if __name__ == "__main__":
             (_, bw_image) = cv.threshold(final_LSF, 0, 255, cv.THRESH_BINARY_INV)
 
             #### DETECTING BUBBLE ####
-            (selected, flowing, bw_image) = dip.get_main_bubble(bw_image, area_coord,
-                                                                sigma, flowing, selected)
+            (selected, flowing, bw_image) = dip.get_main_bubble(bw_image, flowing, selected)
 
             if flowing:
-                #### SAVE IMAGE WITH DRLSE ####
+                ### SAVE IMAGE WITH DRLSE ####
                 dip.get_image_contours(smoothed_img, final_LSF)
                 plt.axis(False)
                 plt.savefig(f"{segmented_frames_path}{full_name_frame}",
@@ -169,12 +168,10 @@ if __name__ == "__main__":
 
                 #### SAVE BINARY IMAGE ####
                 cv.imwrite(f"{bw_frames_path}{short_name_frame}-{selected}.jpg", bw_image)
-                # # plt.imsave(f"{bw_frames_path}{full_name_frame}", bw_image)
 
                 #### SHOW MESSAGE ####
-                print(f'Diameter: {diameter} mm., Image {short_name_frame}-{selected}')
-                print('Image segmented and successfully saved as binary.')
+                print(
+                    f'Diameter: {diameter} mm, Image {short_name_frame}-{selected} was segmented.')
         else:
             pass
-
     # ####### ENDFOR #########
