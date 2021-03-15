@@ -81,30 +81,32 @@ if __name__ == "__main__":
         volumes.append(round(vol, 2))
         radii.append(round(radius, 2))
 
-        #### FOURIER DESCRIPTORS & CENTROID ####
-        # square_image = dip.center_bubble(bw_image)
-        # fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
-        # cX, cY = dip.get_centroid(bw_image)
+        ### FOURIER DESCRIPTORS & CENTROID ####
+        square_image = dip.center_bubble(bw_image)
+        fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
+        cX, cY = dip.get_centroid(bw_image)
 
-        # fig, (a, b) = plt.subplots(1, 2)
-        # fig.set_size_inches(13, 4)
-        # fig.suptitle(f'Desc. de Fourier da imagen {short_name_frame}, bico {diameter}mm',
-        #              fontsize=15)
-        # a.imshow(bw_image)
-        # a.axis(False)
+        fig, (a, b) = plt.subplots(1, 2)
+        fig.set_size_inches(13, 4)
+        fig.suptitle(f'Desc. de Fourier da imagen {short_name_frame}, bico {diameter}mm',
+                     fontsize=15)
+        a.imshow(bw_image)
+        a.axis(False)
 
-        # b.set_yticks(np.arange(0, 1, 0.05))
-        # b.set_xticks(np.arange(0, 14, 1))
-        # b.stem(fd_bubble, use_line_collection=True)
-        # plt.show()
+        b.set_yticks(np.arange(0, 1, 0.05))
+        b.set_xticks(np.arange(0, 14, 1))
+        b.stem(fd_bubble, use_line_collection=True)
+        plt.show(block=False)
+        plt.pause(2)
+        plt.close()
 
     ### SAVE DATA
     volumes_file = node_path + 'volumes.txt'
     np.savetxt(volumes_file, volumes, delimiter=',', fmt='%.2f')
 
-    # volumes_radii_file = node_path + 'volumes_radii.json'
-    # data['volumes'] = volumes
-    # data['radii_from_images'] = radii
-    # with open(volumes_radii_file, 'w', encoding='utf-8') as file:
-    #     json.dump(data, file, indent=2, separators=(',', ':'))
+    volumes_radii_file = node_path + 'volumes_radii.json'
+    data['volumes'] = volumes
+    data['radii_from_images'] = radii
+    with open(volumes_radii_file, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=2, separators=(',', ':'))
     print('*SAVED*')
