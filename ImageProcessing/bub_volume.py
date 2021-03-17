@@ -15,8 +15,8 @@ import os
 
 # Third party imports
 import cv2 as cv
-import matplotlib.pyplot as plt
 import numpy as np
+# import matplotlib.pyplot as plt
 
 # Local application imports
 from dsip import improc as dip
@@ -41,18 +41,17 @@ if __name__ == "__main__":
         dataset = json.load(file)
 
     #### LOADING JSON DATA ####
-    # general data
     db_path = dataset[0]['path']
     backg_path = db_path + 'background.jpg'
     backg = cv.imread(backg_path, 0)
 
-    # node data
-    node = dataset[2]
+    ### NODE DATA
+    node = dataset[1]
     node_path = db_path + node['path']
     diameter = node['diameter']
+    bubbles_number = len(node['bubblesStart'])
     bw_frames_path = node_path + node['bwFramesPath']
     frames = sorted(os.listdir(bw_frames_path))
-    # total_frames = ['1-00001.jpg', '2-00481.jpg', '3-00780.jpg', '4-01041.jpg', '5-01886.jpg']
     images_list = sorted(os.listdir(bw_frames_path))
     images = []
     volumes = []
@@ -60,9 +59,10 @@ if __name__ == "__main__":
     data = {}
 
     ### Looking for the first image of each sequence.
-    for i in range(45):
+    for i in range(bubbles_number):
         for k, name in enumerate(images_list):
-            number, tex = name.split("-")
+            tex, number = name.split("-")
+            number, _ = number.split('.')
             if int(number) == i + 1:
                 images.append(name)
                 break
@@ -86,19 +86,19 @@ if __name__ == "__main__":
         fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
         cX, cY = dip.get_centroid(bw_image)
 
-        fig, (a, b) = plt.subplots(1, 2)
-        fig.set_size_inches(13, 4)
-        fig.suptitle(f'Desc. de Fourier da imagen {short_name_frame}, bico {diameter}mm',
-                     fontsize=15)
-        a.imshow(bw_image)
-        a.axis(False)
+        # fig, (a, b) = plt.subplots(1, 2)
+        # fig.set_size_inches(13, 4)
+        # fig.suptitle(f'Desc. de Fourier da imagen {short_name_frame}, bico {diameter}mm',
+        #              fontsize=15)
+        # a.imshow(bw_image)
+        # a.axis(False)
 
-        b.set_yticks(np.arange(0, 1, 0.05))
-        b.set_xticks(np.arange(0, 14, 1))
-        b.stem(fd_bubble, use_line_collection=True)
-        plt.show(block=False)
-        plt.pause(2)
-        plt.close()
+        # b.set_yticks(np.arange(0, 1, 0.05))
+        # b.set_xticks(np.arange(0, 14, 1))
+        # b.stem(fd_bubble, use_line_collection=True)
+        # plt.show(block=False)
+        # plt.pause(2)
+        # plt.close()
 
     ### SAVE DATA
     volumes_file = node_path + 'volumes.txt'
