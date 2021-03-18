@@ -51,9 +51,8 @@ if __name__ == "__main__":
     diameter = node['diameter']
     bubbles_number = len(node['bubblesStart'])
     bw_frames_path = node_path + node['bwFramesPath']
-    frames = sorted(os.listdir(bw_frames_path))
     images_list = sorted(os.listdir(bw_frames_path))
-    images = []
+    first_images = []
     volumes = []
     radii = []
     data = {}
@@ -64,10 +63,10 @@ if __name__ == "__main__":
             tex, number = name.split("-")
             number, _ = number.split('.')
             if int(number) == i + 1:
-                images.append(name)
+                first_images.append(name)
                 break
 
-    for i, name in enumerate(images_list):
+    for i, name in enumerate(first_images):
         short_name_frame = name.split('.')[0].split('-')[1]
 
         #### LOADING IMAGE ####
@@ -82,9 +81,9 @@ if __name__ == "__main__":
         radii.append(round(radius, 2))
 
         ### FOURIER DESCRIPTORS & CENTROID ####
-        square_image = dip.center_bubble(bw_image)
-        fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
-        cX, cY = dip.get_centroid(bw_image)
+        # square_image = dip.center_bubble(bw_image)
+        # fd_bubble = generic_fourier_descriptor(square_image, 1, 10)
+        # cX, cY = dip.get_centroid(bw_image)
 
         # fig, (a, b) = plt.subplots(1, 2)
         # fig.set_size_inches(13, 4)
@@ -101,8 +100,8 @@ if __name__ == "__main__":
         # plt.close()
 
     ### SAVE DATA
-    volumes_file = node_path + 'volumes.txt'
-    np.savetxt(volumes_file, volumes, delimiter=',', fmt='%.2f')
+    # volumes_file = node_path + 'volumes.txt'
+    # np.savetxt(volumes_file, volumes, delimiter=',', fmt='%.2f')
 
     volumes_radii_file = node_path + 'volumes_radii.json'
     data['volumes'] = volumes
