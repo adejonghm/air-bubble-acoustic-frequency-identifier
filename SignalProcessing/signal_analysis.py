@@ -58,7 +58,7 @@ if __name__ == "__main__":
     size = dataset[0]['bubbleLength']
 
     #### JSON NODE
-    node = dataset[2]
+    node = dataset[3]
     diameter = node['diameter']
     beginnings = node['bubblesStart']
     node_path = db_path + node['path']
@@ -83,11 +83,14 @@ if __name__ == "__main__":
     total_bubbles = len(beginnings)
     speed_deformation = []
     frequencies = []
-    Eo, Re, k = 0, 0, 0
+    Eo = []
+    Re = [] 
+    k = 0
     _, index = bw_images_list[k].split('.')[0].split('-')
+    # index, _ = bw_images_list[k].split('.')[0].split('-')
 
     #### CALCUTAING THE FFT OF A BUBBLE ####
-    for i in range(1):
+    for i in range(total_bubbles):
         bubb = dsp.get_bubble(wave_filtered, beginnings[i], size, Fs)
 
         fast_fourier_transform = abs(fft(2 * bubb[0]) / len(bubb[0]))
@@ -110,7 +113,7 @@ if __name__ == "__main__":
             img_1 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k], 0))
             _, img_1 = cv.threshold(img_1, 200, 255, cv.THRESH_BINARY)
 
-            img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k+step], 0))
+            img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k + step], 0))
             _, img_2 = cv.threshold(img_2, 200, 255, cv.THRESH_BINARY)
 
             img_dif = abs(img_2 - img_1)
@@ -126,15 +129,16 @@ if __name__ == "__main__":
             mean_local_max = np.mean(local_max)
 
             ### Average Deformation Rate 
-            speed_deformation = mean_local_max / (6e-2 * step)
+            speed_deformation.append(mean_local_max / (6e-2 * step))
 
             ### Getting The Next Image
-            k += (step + 1)
+            k += step + 1
             _, index = bw_images_list[k].split('.')[0].split('-')
+            # index, _ = bw_images_list[k].split('.')[0].split('-')
 
         mean_speed_deformation = np.mean(speed_deformation)
-        Eo = dsp.get_eotvos(radius)
-        Re = dsp.get_reynolds(radius, mean_speed_deformation)
+        Eo.append(round(dsp.get_eotvos(radius), 3))
+        Re.append(round(dsp.get_reynolds(radius, mean_speed_deformation), 3))
 
     #### WRITING MEAN FREQUENCY ON THE GRAPH ####
     # mean_freqs = np.mean(frequencies)
@@ -149,14 +153,15 @@ if __name__ == "__main__":
     # dsp.videogram(wave, wave_filtered, Fs)
 
     ### CONSTRUCTING GRACE DIAGRAM ####
+    print('Diameter of the nozzle:', diameter)
     print('Reynolds Numbers:', Re)
     print('Eötvös Numbers:', Eo)
 
-    plt.title("Grace's Diagram")
+    plt.title(f"Grace Diagram")
     plt.xlabel('Eötvös Numbers (Eo)')
     plt.ylabel('Reynolds Numbers (Re)')
-    plt.plot(Eo, Re, 'o', label='Nozzle {}mm'.format(diameter))
+    plt.plot(Eo, Re, '*', label='Diameter of the nozzle: {} mm'.format(diameter))
     plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
-    plt.legend(loc='best')
+    plt.legend(loc='upper center')
     plt.show()
     
