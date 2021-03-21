@@ -47,11 +47,8 @@ if __name__ == "__main__":
     #### READ JSON FILE ####
     with open(input_path, 'r', encoding='utf-8') as file:
         dataset = json.load(file)
-
-
+   
     for i in range(1, 4):
-        Eo = []
-        Re = []
         f_axis = []
         frequencies = []
         node = dataset[i]
@@ -59,6 +56,8 @@ if __name__ == "__main__":
         beginnings = node['bubblesStart']
         size = dataset[0]['bubbleLength']
         diameter = node['diameter']
+        Eo = node['Eotvös_Numbers']
+        Re = node['Reynolds_Numbers']
 
         #### LOADING AUDIO FILE ####
         Fs, wave = wavfile.read(audio_path)
@@ -85,8 +84,6 @@ if __name__ == "__main__":
             radius = dsp.get_radius(freq)
 
             frequencies.append(fast_fourier_transform)
-            Eo.append(dsp.get_eotvos(radius))
-            # Re.append(dsp.get_reynolds(radius))
 
         #### MEAN FREQUENCIES ####
         mean = np.mean(frequencies, axis=0)
@@ -94,19 +91,19 @@ if __name__ == "__main__":
         p_max = mean.tolist().index(v_max)
         f_max = f_axis[p_max]
 
-        plt.plot(f_axis, mean, marker='.', label='diâmetro do bocal: {} mm'.format(diameter))
-        plt.xlim(500, 1300)
-        plt.ylim(0, 550)
-        plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(f_max)))
-        plt.text(f_max-1, v_max, '|')
+        # plt.plot(f_axis, mean, marker='.', label='diâmetro do bocal: {} mm'.format(diameter))
+        # plt.xlim(500, 1300)
+        # plt.ylim(0, 550)
+        # plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(f_max)))
+        # plt.text(f_max-1, v_max, '|')
 
         #### GRACE DIAGRAM ####
-        # plt.plot(Eo, '.', label='Nozzle {}mm'.format(diameter))
+        plt.plot(Eo, Re, 'h', label='Nozzle {}mm'.format(diameter))
 
     #### GRACE DIAGRAM ####
-    # plt.title("Grace Diagram")
-    # plt.xlabel('Eötvös Numbers (Eo)')
-    # plt.ylabel('Reynolds Numbers (Re)')
+    plt.title("Grace Diagram")
+    plt.xlabel('Eötvös Numbers (Eo)')
+    plt.ylabel('Reynolds Numbers (Re)')
 
     #### MEAN FREQUENCIES ####
     # plt.title('Mean Frequency of each Acoustic Signal')

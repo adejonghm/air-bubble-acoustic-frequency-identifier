@@ -58,7 +58,7 @@ if __name__ == "__main__":
     size = dataset[0]['bubbleLength']
 
     #### JSON NODE
-    node = dataset[3]
+    node = dataset[1]
     diameter = node['diameter']
     beginnings = node['bubblesStart']
     node_path = db_path + node['path']
@@ -87,7 +87,6 @@ if __name__ == "__main__":
     Re = [] 
     k = 0
     _, index = bw_images_list[k].split('.')[0].split('-')
-    # index, _ = bw_images_list[k].split('.')[0].split('-')
 
     #### CALCUTAING THE FFT OF A BUBBLE ####
     for i in range(total_bubbles):
@@ -131,10 +130,12 @@ if __name__ == "__main__":
             ### Average Deformation Rate 
             speed_deformation.append(mean_local_max / (6e-2 * step))
 
-            ### Getting The Next Image
+            ### Getting The Next Image -> ARREGLAR EL FIN DE LISTA PARA Q (K + STEP) NO SEA MAYOR Q LA LISTA
             k += step + 1
-            _, index = bw_images_list[k].split('.')[0].split('-')
-            # index, _ = bw_images_list[k].split('.')[0].split('-')
+            if k < len(bw_images_list):
+                _, index = bw_images_list[k].split('.')[0].split('-')
+            else:
+                break
 
         mean_speed_deformation = np.mean(speed_deformation)
         Eo.append(round(dsp.get_eotvos(radius), 3))
@@ -160,7 +161,7 @@ if __name__ == "__main__":
     plt.title(f"Grace Diagram")
     plt.xlabel('Eötvös Numbers (Eo)')
     plt.ylabel('Reynolds Numbers (Re)')
-    plt.plot(Eo, Re, '*', label='Diameter of the nozzle: {} mm'.format(diameter))
+    plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
     plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
     plt.legend(loc='upper center')
     plt.show()
