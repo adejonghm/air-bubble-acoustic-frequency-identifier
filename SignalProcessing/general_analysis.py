@@ -98,7 +98,7 @@ if __name__ == "__main__":
         # plt.text(f_max-1, v_max, '|')
 
         #### GRACE DIAGRAM ####
-        plt.plot(Eo, Re, 'h', label='Nozzle {}mm'.format(diameter))
+        plt.plot(Eo, Re, 'h', label='Nozzle - {}mm'.format(diameter))
 
     #### GRACE DIAGRAM ####
     plt.title("Grace Diagram")

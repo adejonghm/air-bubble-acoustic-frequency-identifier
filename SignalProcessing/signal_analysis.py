@@ -58,7 +58,7 @@ if __name__ == "__main__":
     size = dataset[0]['bubbleLength']
 
     #### JSON NODE
-    node = dataset[1]
+    node = dataset[2]
     diameter = node['diameter']
     beginnings = node['bubblesStart']
     node_path = db_path + node['path']
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     Eo = []
     Re = [] 
     k = 0
-    _, index = bw_images_list[k].split('.')[0].split('-')
+    index, _ = bw_images_list[k].split('.')[0].split('-')
 
     #### CALCUTAING THE FFT OF A BUBBLE ####
     for i in range(total_bubbles):
@@ -112,8 +112,11 @@ if __name__ == "__main__":
             img_1 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k], 0))
             _, img_1 = cv.threshold(img_1, 200, 255, cv.THRESH_BINARY)
 
-            img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k + step], 0))
-            _, img_2 = cv.threshold(img_2, 200, 255, cv.THRESH_BINARY)
+            if (k + step) < len(bw_images_list):
+                img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k + step], 0))
+                _, img_2 = cv.threshold(img_2, 200, 255, cv.THRESH_BINARY)
+            else:
+                break
 
             img_dif = abs(img_2 - img_1)
 
@@ -133,7 +136,7 @@ if __name__ == "__main__":
             ### Getting The Next Image -> ARREGLAR EL FIN DE LISTA PARA Q (K + STEP) NO SEA MAYOR Q LA LISTA
             k += step + 1
             if k < len(bw_images_list):
-                _, index = bw_images_list[k].split('.')[0].split('-')
+                index, _ = bw_images_list[k].split('.')[0].split('-')
             else:
                 break
 
@@ -154,11 +157,11 @@ if __name__ == "__main__":
     # dsp.videogram(wave, wave_filtered, Fs)
 
     ### CONSTRUCTING GRACE DIAGRAM ####
-    print('Diameter of the nozzle:', diameter)
-    print('Reynolds Numbers:', Re)
-    print('Eötvös Numbers:', Eo)
+    # print('Diameter of the nozzle:', diameter)
+    # print('Reynolds Numbers:', Re)
+    # print('Eötvös Numbers:', Eo)
 
-    plt.title(f"Grace Diagram")
+    plt.title("Grace Diagram")
     plt.xlabel('Eötvös Numbers (Eo)')
     plt.ylabel('Reynolds Numbers (Re)')
     plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
