@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# type: ignore
 
 """
 Dev: 	adejonghm
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
-        input_path = args['file']
+        input_path = args['file'] 
     else:
         print('ERROR! JSON file not found.')
         os.sys.exit(1)
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     minimal_error = np.min(q_error)
     index = np.where(q_error == minimal_error)[0][0]
     lmda_effective = lmda_min + index * delta_lmda
-    print('effective lambda:', lmda_effective)
+    print('effective lambda: {} for {}mm diameter'.format(lmda_effective, diameter))
 
     #### CREATING THE IDEAL SIGNAL WITH THE EFFECTIVE LAMBDA
     ideal_signal = amp_max * np.cos(omega * t) * np.exp(-np.pi * lmda_effective * f * t)
@@ -110,14 +110,16 @@ if __name__ == '__main__':
     plt.figure()
     plt.plot(t, real_signal, linewidth=1, label='real')
 
-    plt.title('Signal')
-    plt.plot(t, ideal_signal, linewidth=1, label=f'ideal, with delta={lmda_effective}')
+    # plt.title('Signal')
+    plt.plot(t, ideal_signal, linewidth=1, label=f'ideal, with delta={round(lmda_effective, 5)}')
     plt.xlabel('Seconds')
     plt.legend()
+    plt.grid()
 
-    plt.figure()
-    plt.plot(f_axis, fast_fourier_transform)
-    plt.xlim(0, 3000)
-    plt.xlabel('Frequency [Hz]')
+    # plt.figure()
+    # plt.title('FFT')
+    # plt.plot(f_axis, fast_fourier_transform)
+    # plt.xlim(0, 3000)
+    # plt.xlabel('Frequency [Hz]')
 
     plt.show()
