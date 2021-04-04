@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# type: ignore
 
 """
 Dev: 	adejonghm
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         # plt.xlabel('Freq. [Hz]')
         # plt.ylabel('F(t)')
         # plt.plot(f_axis, fast_fourier_transform)#, marker='.')
-        # plt.xlim(0, 5000)
+        # plt.xlim(500, 1500)
 
         #### ESTIMATING DEFORMATION RATE
         while int(index) - 1 == i:
@@ -167,5 +167,6 @@ if __name__ == "__main__":
     plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
     plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
     plt.legend(loc='upper center')
+    
     plt.show()
     
