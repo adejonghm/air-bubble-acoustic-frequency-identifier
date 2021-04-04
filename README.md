@@ -1,16 +1,18 @@
 
 # Experimental study on the acoustic emission of an air bubble in water
 
-> This is the repository used during the development of my Master's carried out in the field of Acoustics and focused on Digital Signal Processing, complemented with Digital Image Processing.
+> The repository was used during the development of my Master's in the field of Acoustics. Focused on the experimental study on the acoustic emission of an air bubble in water. Digital Signal Processing techniques are applied in this work and are complemented with some Digital Image Processing techniques.
 
 ## Table of Contents
 
-- [Description](#description)
-- [How To Use](#how-to-use)
+- [Description of the content](#description)
+- [How to use this repository](#how-to-use)
 - [References](#references)
 - [Author Info](#author-info)
 
-## Description
+---
+
+## Description of the content
 
 ### Scripts folder
 
@@ -30,13 +32,11 @@ In this folder, there are some scripts that can be used to rename files, create 
 
 **json_manager.py** is used to create and update the JSON file using the library `jilib`.
 
-(*) All these analyzes were performed using the implemented libraries `dsplib` and `jilib`, which are found in the **libs** folder.
-
 &nbsp;
 
 ![Spectrogam Animation](spectrogram.jpg)
   
-> In this work, some techniques were applied to achieve a reproduction of the acoustic signal on its respective spectrogram. [Here](https://www.youtube.com/watch?v=BDlcL5jpu2w) is the video.
+> In this work, some techniques were applied to achieve a reproduction of the acoustic signal on its respective spectrogram. [Here](https://www.youtube.com/channel/UCBacHKerJjp4PwmgcCPCyGg){:target="_blank" rel="noopener"} is the video.
 
 &nbsp;
 
@@ -48,29 +48,38 @@ Some scripts can be found in this folder. **frame_extractor_by_folder.py** is us
 
 There's also the **video_creator.py** script that was developed to create slow motion videos from a set of images.
 
-(*) All these analyzes were performed using the implemented library `imglib`, which is found in the **libs** folder.
+(*) **dsip** is a module developed that incorporates its own libraries such as `sigproc` `improc` and `jilib`, as well as others available publicly.
 
 [Back To The Top](#table-of-contents)
+
+---
 
 ## How To Use
 
-All files in this repository are developed using Python v3.6.9, with the following libraries:
+All files in this repository are developed using Python v3, with the following libraries:
 
-    - Scipy (v1.4.1)
-    - TQDM (v4.46.0)
-    - Numpy (v1.18.4)
-    - OpenCV (v3.2.0)*
-    - Matplotlib (v3.1.2)
-    - Scikit-Image (v0.16.2)
     - JSON (std)
+    - Matplotlib (3.3.4)
+    - Numpy (1.20.1)
+    - OpenCV (4.5.1)
     - OS (std)
-<!--- Pillow (v7.1.2)-->
+    - Pandas (1.2.2)
+    - Scikit-Image (0.18.1)
+    - Scikit-Learn (0.24.1)
+    - Scipy (1.6.1)
+    - TQDM (4.58.0)
+    -------------------
+    - dsip (0.1a)*
 
 ### Installation
 
-(*) This library was installed from the official Ubuntu repository, the rest of the used libraries were installed with PyPI.
+(*) To use this module, it must be copied to some of the addresses included in the Python path. It is recommended to create a virtual environment and copy the module within the virtual environment so that it is added to the Python path.
+
+All libraries used were installed with PyPI.
 
 [Back To The Top](#table-of-contents)
+
+---
 
 ## References
 
@@ -80,7 +89,7 @@ All files in this repository are developed using Python v3.6.9, with the followi
 
 [3] Zhang, D. & Lu, G. *Shape-based image retrieval using generic Fourier descriptor*. Signal Processing: Image Communication, vol. 17, p. 825–848, 2002
 
-[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128)
+[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128){:target="_blank" rel="noopener"}
 
 [Back To The Top](#table-of-contents)
 
@@ -88,10 +97,12 @@ All files in this repository are developed using Python v3.6.9, with the followi
 
 ## Author Info
 
-- email: dejongh.cu@gmail.com
+- email: [dejongh.morell@gmail.com](mailto:dejongh.morell@gmail.com)
 
 - LinkedIn: [adejonghm](https://www.linkedin.com/in/adejonghm/)
 
 - CodersRank: [adejonghm](https://profile.codersrank.io/user/adejonghm/)
+
+<!-- - Telegram: [adejonghm](https://aaa/adejonghm/) -->
 
 [Back To The Top](#table-of-contents)
