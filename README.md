@@ -36,7 +36,7 @@ In this folder, there are some scripts that can be used to rename files, create 
 
 ![Spectrogam Animation](spectrogram.jpg)
   
-> In this work, some techniques were applied to achieve a reproduction of the acoustic signal on its respective spectrogram. [Here](https://www.youtube.com/channel/UCBacHKerJjp4PwmgcCPCyGg){:target="_blank" rel="noopener"} is the video.
+> In this work, some techniques were applied to achieve a reproduction of the acoustic signal on its respective spectrogram. [Here](https://www.youtube.com/channel/UCBacHKerJjp4PwmgcCPCyGg) is the video.
 
 &nbsp;
 
@@ -89,7 +89,7 @@ All libraries used were installed with PyPI.
 
 [3] Zhang, D. & Lu, G. *Shape-based image retrieval using generic Fourier descriptor*. Signal Processing: Image Communication, vol. 17, p. 825–848, 2002
 
-[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128){:target="_blank" rel="noopener"}
+[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128)
 
 [Back To The Top](#table-of-contents)
 
