@@ -48,8 +48,9 @@ if __name__ == "__main__":
 
     #### OPERATIONS ####
     for i in range(1, 4):
-        added_path = [3, 209, 130, 210]
-        outFile = jm.add_item_in_node(loaded_file, i, "flowAreaCoord", added_path)
+        # added_path = "probando funcion"
+        # outFile = jm.add_item_in_node(loaded_file, i, "Eotvos_Numbers", added_path)
+        outFile = jm.del_item("Eotv\u00f6s_Numbers")
 
 
     #### WRITE NEW JSON FILE ####

@@ -10,7 +10,7 @@ removing items on nodes and renaming Keys, all in a JSON file.
 """
 
 
-def add_node(json_file, node, num_node=1):
+def add_node(json_file: list, node: dict, num_node: int=1) -> list:
     """Add a new Node in the JSON file
 
     Args:
@@ -29,7 +29,7 @@ def add_node(json_file, node, num_node=1):
     return data
 
 
-def add_item(json_file, key_name, key_value=""):
+def add_item(json_file: list, key_name: str, key_value: str="") -> list:
     """Add a new item {key: value} on all nodes in the JSON file.
 
     Args:
@@ -48,7 +48,7 @@ def add_item(json_file, key_name, key_value=""):
     return data
 
 
-def add_item_in_node(json_file, node, key_name, key_value=""):
+def add_item_in_node(json_file: list, node: int, key_name: str, key_value: str="") -> list:
     """Add a new item {key: value} on a specific node in the JSON file.
 
     Args:
@@ -68,7 +68,7 @@ def add_item_in_node(json_file, node, key_name, key_value=""):
     return data
 
 
-def del_item(json_file, key_name):
+def del_item(json_file: list, key_name: str) -> list:
     """Remove an item from all nodes in the JSON file.
 
     Args:
@@ -86,7 +86,7 @@ def del_item(json_file, key_name):
     return data
 
 
-def rename_item(json_file, key_name, new_key_name):
+def rename_item(json_file: list, key_name: str, new_key_name: str) -> list:
     """Rename a specific Key on all nodes in the JSON file.
 
     Args:
