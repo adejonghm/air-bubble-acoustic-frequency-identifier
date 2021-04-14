@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     #### READ JSON FILE ####
     with open(input_path, encoding='utf-8') as file:
-        loaded_file = json.load(file)
+        json_loaded = json.load(file)
 
 
     #### MAKE A BACKUP ####
@@ -48,9 +48,8 @@ if __name__ == "__main__":
 
     #### OPERATIONS ####
     for i in range(1, 4):
-        # added_path = "probando funcion"
-        # outFile = jm.add_item_in_node(loaded_file, i, "Eotvos_Numbers", added_path)
-        outFile = jm.del_item("Eotv\u00f6s_Numbers")
+        key_name = "segmentedFramesPath"
+        outFile = jm.del_item_in_node(loaded_file, i, key_name)
 
 
     #### WRITE NEW JSON FILE ####
