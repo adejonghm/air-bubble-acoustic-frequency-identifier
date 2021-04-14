@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# type: ignore
 
 """
 Created on:	 May, 2020
