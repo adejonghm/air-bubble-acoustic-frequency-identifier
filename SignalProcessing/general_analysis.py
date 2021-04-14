@@ -56,7 +56,7 @@ if __name__ == "__main__":
         beginnings = node['bubblesStart']
         size = dataset[0]['bubbleLength']
         diameter = node['diameter']
-        Eo = node['Eotvös_Numbers']
+        Eo = node['Eotvos_Numbers']
         Re = node['Reynolds_Numbers']
 
         #### LOADING AUDIO FILE ####
@@ -98,7 +98,11 @@ if __name__ == "__main__":
         # plt.text(f_max-1, v_max, '|')
 
         #### GRACE DIAGRAM ####
-        plt.plot(Eo, Re, 'h', label='Nozzle - {}mm'.format(diameter))
+        if diameter == 2:
+            label = 'Diameter of the nozzle: {}.5 mm'.format(diameter)
+        else:
+            label = 'Diameter of the nozzle: {}.0 mm'.format(diameter)
+        plt.plot(Eo, Re, 'h', label=label)
 
     #### GRACE DIAGRAM ####
     plt.title("Grace Diagram")
