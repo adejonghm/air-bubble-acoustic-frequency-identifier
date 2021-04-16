@@ -46,7 +46,7 @@ if __name__ == "__main__":
     backg = cv.imread(backg_path, 0)
 
     ### NODE DATA
-    node = dataset[1]
+    node = dataset[3]
     node_path = db_path + node['path']
     diameter = node['diameter']
     bubbles_number = len(node['bubblesStart'])
@@ -60,8 +60,7 @@ if __name__ == "__main__":
     ### Looking for the first image of each sequence.
     for i in range(bubbles_number):
         for k, name in enumerate(images_list):
-            tex, number = name.split("-")
-            number, _ = number.split('.')
+            number, _ = name.split("-")
             if int(number) == i + 1:
                 first_images.append(name)
                 break
@@ -100,12 +99,11 @@ if __name__ == "__main__":
         # plt.close()
 
     ### SAVE DATA
-    # volumes_file = node_path + 'volumes.txt'
-    # np.savetxt(volumes_file, volumes, delimiter=',', fmt='%.2f')
-
     volumes_radii_file = node_path + 'volumes_radii.json'
+    data['diameter'] = diameter
     data['volumes'] = volumes
     data['radii_from_images'] = radii
+    
     with open(volumes_radii_file, 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=2, separators=(',', ':'))
     print('*SAVED*')

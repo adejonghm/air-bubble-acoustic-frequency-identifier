@@ -47,9 +47,8 @@ if __name__ == "__main__":
 
 
     #### OPERATIONS ####
-    for i in range(1, 4):
-        key_name = "segmentedFramesPath"
-        outFile = jm.del_item_in_node(loaded_file, i, key_name)
+    new_node = {"test": 100}
+    outFile = jm.add_node(json_loaded, new_node)
 
 
     #### WRITE NEW JSON FILE ####

@@ -116,8 +116,8 @@ def rename_item(json_file: list, key_name: str, new_key_name: str) -> list:
     """
 
     data = json_file.copy()
-    for i in data:
-        value = i.pop(key_name)
-        i[new_key_name] = value
+    for node in data:
+        value = node.pop(key_name)
+        node[new_key_name] = value
 
     return data

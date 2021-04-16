@@ -60,7 +60,7 @@ if __name__ == '__main__':
     sos = signal.butter(15, (500, 1500), 'bandpass', fs=Fs, output='sos')
     wave_filtered = signal.sosfilt(sos, wave)
 
-    #### READ THE BUBBLE SIGNAL
+    #### SELECT THE BUBBLE SIGNAL
     start = bub_beginnings[5]
     end = start + bub_length
     bub_signal = wave_filtered[start:end]
@@ -70,6 +70,8 @@ if __name__ == '__main__':
     amp_max = np.max(bub_signal)
     t_min = np.where(bub_signal == amp_max)[0][0]
     t_max = 2800
+    
+    #### LOAD THE REAL SIGNAL
     real_signal = bub_signal[t_min:t_max]
     signal_length = len(real_signal)
     t = np.arange(0, signal_length / Fs, Ts)
