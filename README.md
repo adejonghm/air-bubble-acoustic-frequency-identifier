@@ -73,9 +73,9 @@ All files in this repository are developed using Python v3, with the following l
 
 ### Installation
 
-(*) To use this module, it must be copied to some of the addresses included in the Python path. It is recommended to create a virtual environment and copy the module within the virtual environment so that it is added to the Python path.
+(*) This is a module developed that incorporates the libraries and functions used for all the scripts. It must be copied to some of the addresses included in the Python path to use it. It is strongly recommended to create a virtual environment and copy the module inside it in path `/lib/python3.x/site-packages/` to add it to Python's path.
 
-All libraries used were installed with PyPI.
+All the libraries used can be installed using PyPI or it can be installed used the `requirements.txt` file.
 
 [Back To The Top](#table-of-contents)
 
