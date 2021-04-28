@@ -35,6 +35,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--file", required=True, help="path to the input JSON file")
     args = vars(ap.parse_args())
+    input_path = ''
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
         input_path = args['file']
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     #### READ JSON FILE ####
     with open(input_path, 'r', encoding='utf-8') as file:
         dataset = json.load(file)
-   
+
     for i in range(1, 4):
         f_axis = []
         frequencies = []
@@ -95,7 +96,7 @@ if __name__ == "__main__":
             label ='diâmetro do bocal: {}.5 mm'.format(diameter)
         else:
             label ='diâmetro do bocal: {}.0 mm'.format(diameter)
-        
+
         plt.plot(f_axis, mean, marker='.', label=label)
         plt.xlim(500, 1300)
         plt.ylim(0, 550)

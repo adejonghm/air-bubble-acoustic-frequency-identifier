@@ -25,8 +25,10 @@ if __name__ == "__main__":
 
     #### CONSTRUCT ARGUMENT PARSE ####
     ap = argparse.ArgumentParser()
-    ap.add_argument("-f", "--file", required=True, help="path to the input JSON file")
+    ap.add_argument("-f", "--file", required=True,
+                    help="path to the input JSON file")
     args = vars(ap.parse_args())
+    input_path = ''
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
         input_path = args['file']
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     backg_path = db_path + 'background.jpg'
     backg = cv.imread(backg_path, 0)
 
-    ### NODE DATA
+    # NODE DATA
     node = dataset[3]
     node_path = db_path + node['path']
     diameter = node['diameter']
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     radii = []
     data = {}
 
-    ### Looking for the first image of each sequence.
+    # Looking for the first image of each sequence.
     for i in range(bubbles_number):
         for k, name in enumerate(images_list):
             number, _ = name.split("-")
@@ -96,7 +98,7 @@ if __name__ == "__main__":
         # plt.pause(2)
         # plt.close()
 
-    ### SAVE DATA
+    # SAVE DATA
     volumes_radii_file = node_path + 'volumes_radii.json'
     data['diameter'] = diameter
     data['volumes'] = volumes

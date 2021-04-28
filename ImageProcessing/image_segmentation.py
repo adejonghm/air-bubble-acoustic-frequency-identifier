@@ -30,8 +30,8 @@ if __name__ == "__main__":
     ap.add_argument("-f", "--file", required=True,
                     help="path to the input JSON file")
     args = vars(ap.parse_args())
-
     input_path = ''
+
     if args['file'].endswith('.json') and os.path.exists(args['file']):
         input_path = args['file']
     else:

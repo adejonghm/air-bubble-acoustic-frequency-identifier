@@ -224,7 +224,7 @@ def center_bubble(image: np.ndarray) -> np.ndarray:
             else:
                 new_dim[i] = imax-imin
 
-        comp = np.zeros_like(new_dim)
+        comp = np.zeros(tuple(new_dim))
         if max_pos == 0:
             square_fig = np.concatenate((image, comp), axis=1)
         else:
