@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -91,28 +90,34 @@ if __name__ == "__main__":
         p_max = mean.tolist().index(v_max)
         f_max = f_axis[p_max]
 
-        # plt.plot(f_axis, mean, marker='.', label='diâmetro do bocal: {} mm'.format(diameter))
-        # plt.xlim(500, 1300)
-        # plt.ylim(0, 550)
-        # plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(f_max)))
-        # plt.text(f_max-1, v_max, '|')
-
-        #### GRACE DIAGRAM ####
+        #### FFT LABELS ####
         if diameter == 2:
-            label = 'Diameter of the nozzle: {}.5 mm'.format(diameter)
+            label ='diâmetro do bocal: {}.5 mm'.format(diameter)
         else:
-            label = 'Diameter of the nozzle: {}.0 mm'.format(diameter)
-        plt.plot(Eo, Re, 'h', label=label)
+            label ='diâmetro do bocal: {}.0 mm'.format(diameter)
+        
+        plt.plot(f_axis, mean, marker='.', label=label)
+        plt.xlim(500, 1300)
+        plt.ylim(0, 550)
+        plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(f_max)), fontweight=550)
+        plt.text(f_max-1, v_max, '|')
+
+        #### GRACE DIAGRAM LABELS ####
+        # if diameter == 2:
+        #     label = 'Diameter of the nozzle: {}.5 mm'.format(diameter)
+        # else:
+        #     label = 'Diameter of the nozzle: {}.0 mm'.format(diameter)
+        # plt.plot(Eo, Re, 'h', label=label)
 
     #### GRACE DIAGRAM ####
-    plt.title("Grace Diagram")
-    plt.xlabel('Eötvös Numbers (Eo)')
-    plt.ylabel('Reynolds Numbers (Re)')
+    # plt.title("Grace Diagram")
+    # plt.xlabel('Eötvös Numbers (Eo)')
+    # plt.ylabel('Reynolds Numbers (Re)')
 
     #### MEAN FREQUENCIES ####
     # plt.title('Mean Frequency of each Acoustic Signal')
-    # plt.xlabel('Frequency [Hz]')
-    # plt.ylabel('Amplitude')
+    plt.xlabel('Frequência [Hz]')
+    plt.ylabel('Amplitude')
 
     plt.legend(loc='best')
     plt.show()

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -32,7 +31,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
-        input_path = args['file'] 
+        input_path = args['file']
     else:
         print('ERROR! JSON file not found.')
         os.sys.exit(1)
@@ -70,7 +69,7 @@ if __name__ == '__main__':
     amp_max = np.max(bub_signal)
     t_min = np.where(bub_signal == amp_max)[0][0]
     t_max = 2800
-    
+
     #### LOAD THE REAL SIGNAL
     real_signal = bub_signal[t_min:t_max]
     signal_length = len(real_signal)

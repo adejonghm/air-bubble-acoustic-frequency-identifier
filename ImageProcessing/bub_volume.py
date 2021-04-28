@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -16,11 +15,10 @@ import os
 # Third party imports
 import cv2 as cv
 import numpy as np
-# import matplotlib.pyplot as plt
 
 # Local application imports
 from dsip import improc as dip
-from dsip.gfd import generic_fourier_descriptor
+# from dsip.gfd import generic_fourier_descriptor
 
 
 if __name__ == "__main__":
@@ -103,7 +101,7 @@ if __name__ == "__main__":
     data['diameter'] = diameter
     data['volumes'] = volumes
     data['radii_from_images'] = radii
-    
+
     with open(volumes_radii_file, 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=2, separators=(',', ':'))
     print('*SAVED*')

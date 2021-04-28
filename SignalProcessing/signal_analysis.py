@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     size = dataset[0]['bubbleLength']
 
     #### JSON NODE
-    node = dataset[2]
+    node = dataset[3]
     diameter = node['diameter']
     beginnings = node['bubblesStart']
     node_path = db_path + node['path']
@@ -102,52 +101,53 @@ if __name__ == "__main__":
 
         #### PLOTTING THE FFT OF A BUBBLE
         # plt.title('Frequency Domain [Diameter of nozzle: {} mm]'.format(diameter))
-        # plt.xlabel('Freq. [Hz]')
-        # plt.ylabel('F(t)')
-        # plt.plot(f_axis, fast_fourier_transform)#, marker='.')
-        # plt.xlim(500, 1500)
+        plt.xlabel('Freq. [Hz]')
+        plt.ylabel('Amplitude')
+        plt.plot(f_axis, fast_fourier_transform, marker='.')
+        plt.xlim(500, 1500)
 
         #### ESTIMATING DEFORMATION RATE
-        while int(index) - 1 == i:
-            img_1 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k], 0))
-            _, img_1 = cv.threshold(img_1, 200, 255, cv.THRESH_BINARY)
+        # while int(index) - 1 == i:
+        #     img_1 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k], 0))
+        #     _, img_1 = cv.threshold(img_1, 200, 255, cv.THRESH_BINARY)
 
-            if (k + step) < len(bw_images_list):
-                img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k + step], 0))
-                _, img_2 = cv.threshold(img_2, 200, 255, cv.THRESH_BINARY)
-            else:
-                break
+        #     if (k + step) < len(bw_images_list):
+        #         img_2 = dip.center_bubble(cv.imread(bw_img_path + bw_images_list[k + step], 0))
+        #         _, img_2 = cv.threshold(img_2, 200, 255, cv.THRESH_BINARY)
+        #     else:
+        #         break
 
-            img_dif = abs(img_2 - img_1)
+        #     img_dif = abs(img_2 - img_1)
 
-            ### Calculating Distance Transform
-            dist_transform = cv.distanceTransform(img_dif.astype(np.uint8), cv.DIST_L2, 0)
+        #     ### Calculating Distance Transform
+        #     dist_transform = cv.distanceTransform(img_dif.astype(np.uint8), cv.DIST_L2, 0)
 
-            ### Coordinates Of Local Maxima
-            coord_local_max = sk_feature.peak_local_max(dist_transform)
+        #     ### Coordinates Of Local Maxima
+        #     coord_local_max = sk_feature.peak_local_max(dist_transform)
 
-            ### Mean Of The Local Maxima
-            local_max = np.array([dist_transform[x, y] for x, y in coord_local_max])
-            mean_local_max = np.mean(local_max)
+        #     ### Mean Of The Local Maxima
+        #     local_max = np.array([dist_transform[x, y] for x, y in coord_local_max])
+        #     mean_local_max = np.mean(local_max)
 
-            ### Average Deformation Rate 
-            speed_deformation.append(mean_local_max / (6e-2 * step))
+        #     ### Average Deformation Rate 
+        #     speed_deformation.append(mean_local_max / (6e-2 * step))
 
-            ### Getting The Next Image -> ARREGLAR EL FIN DE LISTA PARA Q (K + STEP) NO SEA MAYOR Q LA LISTA
-            k += step + 1
-            if k < len(bw_images_list):
-                index, _ = bw_images_list[k].split('.')[0].split('-')
-            else:
-                break
+        #     ### Getting The Next Image -> ARREGLAR EL FIN DE LISTA PARA Q (K + STEP) NO SEA MAYOR Q LA LISTA
+        #     k += step + 1
+        #     if k < len(bw_images_list):
+        #         index, _ = bw_images_list[k].split('.')[0].split('-')
+        #     else:
+        #         break
 
-        mean_speed_deformation = np.mean(speed_deformation)
-        Eo.append(round(dsp.get_eotvos(radius), 3))
-        Re.append(round(dsp.get_reynolds(radius, mean_speed_deformation), 3))
+        # mean_speed_deformation = np.mean(speed_deformation)
+        # Eo.append(round(dsp.get_eotvos(radius), 3))
+        # Re.append(round(dsp.get_reynolds(radius, mean_speed_deformation), 3))
 
     #### WRITING MEAN FREQUENCY ON THE GRAPH ####
-    # mean_freqs = np.mean(frequencies)
-    # plt.text(1690, 110, 'Mean Frequency: {} Hz'.format(int(mean_freqs)), size=9,
-    #          bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False))
+    mean_freqs = np.mean(frequencies)
+    plt.text(1338, 518, 'Frequência Média: {} Hz'.format(int(mean_freqs)), size=9,
+             bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False))
+    
     # dsp.plot_signal_bubbles(wave_filtered, beginnings, size, diameter)
 
     # dsp.plot_spectrogram(wave_filtered, Fs, mean_freqs, diameter)
@@ -161,12 +161,11 @@ if __name__ == "__main__":
     # print('Reynolds Numbers:', Re)
     # print('Eötvös Numbers:', Eo)
 
-    plt.title("Grace Diagram")
-    plt.xlabel('Eötvös Numbers (Eo)')
-    plt.ylabel('Reynolds Numbers (Re)')
-    plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
-    plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
-    plt.legend(loc='upper center')
+    # plt.title("Grace Diagram")
+    # plt.xlabel('Eötvös Numbers (Eo)')
+    # plt.ylabel('Reynolds Numbers (Re)')
+    # plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
+    # plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
+    # plt.legend(loc='upper center')
     
     plt.show()
-    

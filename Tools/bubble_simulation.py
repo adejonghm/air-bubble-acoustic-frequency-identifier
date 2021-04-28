@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -82,8 +81,8 @@ Ps = ps * noise
 
 start = np.zeros(500, dtype=float)
 Ps1 = np.concatenate((start, Ps), axis=None)
-length = len(start) + len(t)
-t1 = np.arange(0, length) / 10000
+
+t1 = np.arange(0, len(Ps1)) / 10000
 
 # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 4))
 # ax1.set_title('Audio Signal')

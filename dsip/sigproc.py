@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Dev: 	adejonghm
@@ -129,7 +128,7 @@ def get_reynolds(radius, v_rel, scale_factor=0.3846):
     return (rho * v_rel * radius * 2) / mu
 
 
-def plot_signal(audio_filt, diameter, time): #, fs, begs):
+def plot_signal(audio_filt, diameter, time, fs, begs):
     """
     Args:
         audio_filt (ndarray): [description]
@@ -139,18 +138,18 @@ def plot_signal(audio_filt, diameter, time): #, fs, begs):
         begs (list): [description]
     """
 
-    plt.title('Sinal no Domínio do Tempo [Diâmetro do bocal: {} mm]'.format(diameter))
+    plt.title('Time Domain Signal [Diameter of nozzle: {} mm]'.
+              format(diameter))
     plt.xlabel('Segundos (s)')
     plt.ylabel('Amplitude')
     plt.ylim(-4000, 4000)
     plt.plot(time, audio_filt)
 
-    # for e in begs:
-    #     plt.axvline(e / fs, color='r', linestyle='--')
+    for e in begs:
+        plt.axvline(e / fs, color='r', linestyle='--')
 
     plt.grid()
     plt.show()
-    # plt.savefig('dominio_do_tempo_sinal_{}mm.png'.format(diameter))
 
 
 def plot_signal_bubbles(audio_filt, begs, size, diameter):
@@ -165,7 +164,8 @@ def plot_signal_bubbles(audio_filt, begs, size, diameter):
     for _, beg in enumerate(begs):
         bubb, bubb_time = get_bubble(audio_filt, beg, size)
 
-        plt.title('Domínio do Tempo [Diâmetro do bocal: {} mm]'.format(diameter))
+        plt.title('Time Domain [Diameter of nozzle: {} mm]'.
+                  format(diameter))
         plt.xlabel('Milissegundo')
         plt.ylabel('Amplitude')
         plt.plot(bubb_time, bubb)
@@ -269,3 +269,21 @@ def videogram(audio, audio_filt, fs, fps=30, btr=3500):
     clear()
     os.system("rm temp.mp4")
     os.system("rm cutted.wav")
+
+
+def create_signal(frequency, deltha, time, amplitude=1):
+
+    """[summary]
+
+    Args:
+        frequency ([type]): [description]
+        deltha ([type]): [description]
+        time ([type]): [description]
+        amplitude (int, optional): [description]. Defaults to 1.
+
+    Returns:
+        [type]: [description]
+    """
+
+    omega = 2 * np.pi * frequency
+    return amplitude * np.cos(omega * time) * np.exp(-np.pi * deltha * frequency * time)

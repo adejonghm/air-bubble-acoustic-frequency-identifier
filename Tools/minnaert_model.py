@@ -11,15 +11,33 @@ THE NATURAL FREQUENCY OF THE ACOUSTIC EMISSION OF A BUBBLE
 
 # Standard library imports
 from math import pi
+import json
 
 
-specific_heat_ratio = 1.40      # Specific Heat Radio. (k = Cp/Cv)
-# radio = 0.0033                  # Initial radius of the bubble. Expressed in meters [m]
-freq = 724                      # Natural frequency of the bubble captured with a hydrophone, [Hz]
-rho = 998                       # Liquid Water Density (rho). Expressed in [Kg/m^3]
-atm_pressure = 101325           # Atmospheric pressure taking it as initial pressure . [Pa]
+if __name__ == '__main__':
+    with open('frequencies.json', encoding='utf-8') as f:
+        dataset = json.load(f)
 
-# freq = ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * radio)
-radio = ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * freq)
+    # Natural frequency of the bubble captured with a hydrophone, [Hz]
+    frequencies = dataset[2]['frequencies']
 
-print("radius: {:.2f}[mm], Frequency: {:.0f}[Hz]".format(radio*1000, freq))
+    # Specific Heat Radio. (k = Cp/Cv)
+    specific_heat_ratio = 1.40
+
+    # Initial radius of the bubble. Expressed in meters [m]
+    # radio = 0.0033
+
+    # Liquid Water Density (rho). Expressed in [Kg/m^3]
+    rho = 998
+
+    # Atmospheric pressure taking it as initial pressure . [Pa]
+    atm_pressure = 101325
+
+    # freq = ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * radio)
+    # radio = ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * freq)
+
+    radii = []
+    for f in frequencies:
+        radio = ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * f)
+        radii.append(round(radio * 1000, 2))
+        print("radius: {:.02f}[mm], Frequency: {}[Hz]".format(radio*1000, f))
