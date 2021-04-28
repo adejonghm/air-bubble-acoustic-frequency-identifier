@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# type: ignore
 
 """
 Created on:	 May, 2020
@@ -10,18 +9,15 @@ This module was implemented in order to create functions used in
 the image processing performed.
 """
 
+# Standard library imports
+from math import pi
 
+# Third party imports
 import cv2 as cv
 import numpy as np
-
-from math import pi
-from typing import TypeVar
 from skimage import measure
 from matplotlib import pyplot as plt
 
-
-# Setting types
-ndarray = TypeVar("np.ndarray")
 
 # Setting Color Map
 plt.rcParams['image.cmap'] = 'gray'
@@ -29,7 +25,7 @@ plt.rcParams['figure.dpi'] = 100.0
 plt.rcParams['figure.figsize'] = (4.14, 2.97)
 
 
-def get_image_contours(image: ndarray, ctr_param: ndarray, fig_title: str = None):
+def get_image_contours(image: np.ndarray, ctr_param: np.ndarray, fig_title: str = None):
     """Display the contours of an object over an image.
 
     Args:
@@ -45,7 +41,7 @@ def get_image_contours(image: ndarray, ctr_param: ndarray, fig_title: str = None
         plt.plot(contour[:, 1], contour[:, 0], color='r', linewidth=1.5)
 
 
-def get_centroid(image: ndarray) -> tuple:
+def get_centroid(image: np.ndarray) -> tuple:
     """Determine the X and Y coordinates of the Centroid on the
     object that appears in the image.
 
@@ -64,20 +60,19 @@ def get_centroid(image: ndarray) -> tuple:
     return (cX, cY)
 
 
-def get_main_bubble(image: ndarray, flag: bool, iteration: int) -> ndarray:
+def get_main_bubble(image: np.ndarray, flag: bool, iteration: int) -> tuple:
     """Select the main bubble in the image based on its size.
 
     Args:
         image (ndarray): Grayscale Image with one channel.
         flag (bool): Selector to decide which bubble is taken.
-        iteration (int): The number of the bubble used to rename the binary image.
+        iteration (int): The number of the bubble used to rename the M image.
 
     Returns:
         ndarray: A new image with the main object.
     """
 
     contours = measure.find_contours(image, 0)
-    print(len(contours))
     lengths = [len(item) for i, item in enumerate(contours)]
     index = lengths.index(max(lengths))
 
@@ -88,8 +83,8 @@ def get_main_bubble(image: ndarray, flag: bool, iteration: int) -> ndarray:
 
     # RELEASING THE FLAG WHEN THE BUBBLE REACHES THE TOP
     lengths = [len(item) for i, item in enumerate(contours)]
-    print(lengths)
-    y_min, y_max = min(contours[0][:, 0]), max(contours[0][:, 0])
+
+    y_min, y_max = int(min(contours[0][:, 0])), int(max(contours[0][:, 0]))
     if flag and y_min < 8:
         flag = False
 
@@ -105,7 +100,7 @@ def get_main_bubble(image: ndarray, flag: bool, iteration: int) -> ndarray:
     return (iteration, flag, new_image)
 
 
-def get_number_of_bubble(image: ndarray) -> int:
+def get_number_of_bubble(image: np.ndarray) -> int:
     """Get the number of bubbles in a image
 
     Args:
@@ -119,7 +114,7 @@ def get_number_of_bubble(image: ndarray) -> int:
     return len(contours)
 
 
-def get_bubble_volume(image: ndarray, scale_factor: float) -> float:
+def get_bubble_volume(image: np.ndarray, scale_factor: float) -> float:
     """Calculate the volume of the bubble that appears in the image.
     The volume is calculated in each row of the image, using the
     scale_factor parameter as the height in the equation.
@@ -141,7 +136,7 @@ def get_bubble_volume(image: ndarray, scale_factor: float) -> float:
     return volume
 
 
-def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:
+def clean_image(image: np.ndarray, coord: list, sigmaX: float) -> np.ndarray:
     """Select the flow area in the image, with the objects.
 
     Args:
@@ -168,12 +163,14 @@ def clean_image(image: ndarray, coord: list, sigmaX: float) -> ndarray:
 
     if any(i >= 70 for i in lengths):
         new_image[y_min:y_max, x_min:x_max] = image[y_min:y_max, x_min:x_max]
-        return cv.GaussianBlur(new_image, (5, 5), sigmaX)
+        new_image = cv.GaussianBlur(new_image, (5, 5), sigmaX)
     else:
-        return np.zeros_like(image)
+        new_image = np.zeros_like(image)
+
+    return new_image
 
 
-def detect_bubble(image: ndarray) -> int:
+def detect_bubble(image: np.ndarray) -> int:
     """Determine the number of object on the image.
 
     Args:
@@ -184,14 +181,12 @@ def detect_bubble(image: ndarray) -> int:
     """
 
     number_of_obj = len(measure.find_contours(image, 0))
-    if number_of_obj == 0:
-        return 0
-    else:
-        return number_of_obj
+    return 0 if number_of_obj == 0 else number_of_obj
 
 
-def center_bubble(image: ndarray) -> ndarray:
-    """Center the object on the image. The image can only have
+def center_bubble(image: np.ndarray) -> np.ndarray:
+    """
+    Center the object on the image. The image can only have
     a single object. In case the original image is not square,
     the new image will be square with the object in the center.
 
@@ -215,8 +210,6 @@ def center_bubble(image: ndarray) -> ndarray:
         square_fig = np.zeros_like(image)
         square_fig[offsetY:offsetY+h, offsetX:offsetX+w] = image[y:y+h, x:x+w]
 
-        return square_fig
-
     else:
         # CREATING SQUARE IMAGE
         dim = image.shape
@@ -231,7 +224,7 @@ def center_bubble(image: ndarray) -> ndarray:
             else:
                 new_dim[i] = imax-imin
 
-        comp = np.zeros(new_dim)
+        comp = np.zeros_like(new_dim)
         if max_pos == 0:
             square_fig = np.concatenate((image, comp), axis=1)
         else:
@@ -244,10 +237,10 @@ def center_bubble(image: ndarray) -> ndarray:
         square_fig = np.zeros_like(square_fig)
         square_fig[offsetY:offsetY+h, offsetX:offsetX+w] = image[y:y+h, x:x+w]
 
-        return square_fig
+    return square_fig
 
 
-def subtract(image1: ndarray, image2: ndarray, thresh: int) -> ndarray:
+def subtract(image1: np.ndarray, image2: np.ndarray, thresh: int) -> np.ndarray:
     """Subtract (image1 - image2) pixel by pixel that has the same
     dimensions, putting zero where the result is less than 20.
 
