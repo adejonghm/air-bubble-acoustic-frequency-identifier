@@ -10,8 +10,8 @@ the digital signal processing performed.
 
 
 # Standard library imports
-from math import pi
 import os
+from math import pi
 
 # Third party imports
 import numpy as np
@@ -33,8 +33,18 @@ def clear():
         _ = os.system('clear')
 
 
-def get_bubble(audio, start, size, fs=48000):
-    """No Description"""
+def get_bubble(audio: np.ndarray, start: int, size: int, fs: int = 48000) -> tuple:
+    """Selects a specific bubble of the audio, from its start and duration.
+
+    Args:
+        audio (np.ndarray): Acoustic signal from where the bubble will be obtained.
+        start (int): Point where the bubble begins.
+        size (int): Size of the bubble.
+        fs (int, optional): Sampling frequency. Defaults to 48000.
+
+    Returns:
+        tuple: The signal and its time length.
+    """
 
     bubble = audio[start: start + size]
     bubble_time = np.arange(0, len(bubble) / fs, 1/fs) * 1000
@@ -42,22 +52,31 @@ def get_bubble(audio, start, size, fs=48000):
     return (bubble, bubble_time)
 
 
-def get_max_values(audio, size, max_value=8000):
-    """No Description"""
+def get_max_values(audio: np.ndarray, size: int, max_value: int = 8000) -> list:
+    """Determine the amplitude values that are higher than a given value,
+    which will be taken as maximum amplitude values in the audio.
+
+    Args:
+        audio (np.ndarray): Acoustic signal in which the maximum values will be found.
+        size (int): Size of the bubble.
+        max_value (int, optional): The value taken as a threshold. Defaults to 8000.
+
+    Returns:
+        list: All the maximum values found.
+    """
 
     max_pos = []
     for i in range(0, len(audio), size):
-        _slice = audio[i:i+size]
-        m = _slice.max()
+        chunk = audio[i:i+size]
+        m = chunk.max()
         if m > max_value:
             max_pos.append(audio.tolist().index(m))
     return max_pos
 
 
-def get_radius(frequency):
-    """
-    Mathematical Model Proposed By Minnaert To Calculate
-    The Natural Frequency Of The Acoustic Emission Of A Bubble.
+def get_radius(frequency: int) -> float:
+    """Mathematical model proposed by Minnaert to determine
+    the natural frequency of the acoustic emission of a bubble.
 
     Args:
         frequency (int): Frequency of the bubble
@@ -78,9 +97,8 @@ def get_radius(frequency):
     return ((3 * specific_heat_ratio * atm_pressure / rho) ** (1/2)) / (2 * pi * frequency)
 
 
-def get_eotvos(radius):
-    """
-    Returns the Eötvös Number of a Bubble: (Δρ·g·d^2) / σ
+def get_eotvos(radius: float) -> float:
+    """Find the Eötvös Number of a Bubble: (Δρ·g·d^2) / σ
 
     (Δrho) : Water Density - Air Density
     (g): The Gravitational Aceleration.
@@ -101,9 +119,8 @@ def get_eotvos(radius):
     return (delta_rho * gravity * pow(radius*2, 2)) / liquid_surface_tension
 
 
-def get_reynolds(radius, v_rel, scale_factor=0.3846):
-    """
-    Returns the Reynolds Number of a Bubble: (ρ·Vr·d) / μ
+def get_reynolds(radius: float, v_rel: float, scale_factor: float = 0.3846) -> float:
+    """Find the Reynolds Number of a Bubble: (ρ·Vr·d) / μ
 
     (rho): The Water Density. [Kg/m^3]
     (Vr): Relative Velocity = Air Velocity (Deformation Velocity) - Liquid Velocity
@@ -128,14 +145,15 @@ def get_reynolds(radius, v_rel, scale_factor=0.3846):
     return (rho * v_rel * radius * 2) / mu
 
 
-def plot_signal(audio_filt, diameter, time, fs, begs):
-    """
+def plot_signal(audio: np.ndarray, diameter: int, time: np.ndarray, *args):
+    """Display an acoustic signal as a function of time.
+
     Args:
-        audio_filt (ndarray): [description]
-        diameter (int): [description]
-        time (ndarray): [description]
-        fs (int): [description]
-        begs (list): [description]
+        audio (np.ndarray): Acoustic signal to be plotted.
+        diameter (int): Diameter of the nozzle used in the title of the plot.
+        time (np.ndarray): Time vector over which the acoustic signal is represented.
+        *args[begs (list), Fs (int)]: 'Fs' is the sampling frequency and
+                                      'begs' are the beginnings of the bubbles.
     """
 
     plt.title('Time Domain Signal [Diameter of nozzle: {} mm]'.
@@ -143,26 +161,27 @@ def plot_signal(audio_filt, diameter, time, fs, begs):
     plt.xlabel('Segundos (s)')
     plt.ylabel('Amplitude')
     plt.ylim(-4000, 4000)
-    plt.plot(time, audio_filt)
+    plt.plot(time, audio)
 
-    for e in begs:
-        plt.axvline(e / fs, color='r', linestyle='--')
+    for e in args[0]:
+        plt.axvline(e / args[1], color='r', linestyle='--')
 
     plt.grid()
     plt.show()
 
 
-def plot_signal_bubbles(audio_filt, begs, size, diameter):
-    """
+def plot_signal_bubbles(audio: np.ndarray, begs: list, size: int, diameter: int):
+    """Display a Bubble as a function of time.
+
     Args:
-        audio_filt (ndarray): [description]
-        begs (list): [description]
-        size (int): [description]
-        diameter (int): [description]
+        audio (ndarray): Acoustic signal where the bubble is found.
+        begs (list): Points where the bubbles begin.
+        size (int): Size of the bubble.
+        diameter (int): Diameter of the nozzle used in the title of the plot.
     """
 
     for _, beg in enumerate(begs):
-        bubb, bubb_time = get_bubble(audio_filt, beg, size)
+        bubb, bubb_time = get_bubble(audio, beg, size)
 
         plt.title('Time Domain [Diameter of nozzle: {} mm]'.
                   format(diameter))
@@ -175,22 +194,23 @@ def plot_signal_bubbles(audio_filt, begs, size, diameter):
     plt.show()
 
 
-def plot_spectrogram(audio_filt, diameter, fs, ave):
-    """
+def plot_spectrogram(audio: np.ndarray, diameter: int, fs: int, *args):
+    """Display the sprectrogram of the acoustic signal.
+
     Args:
-        audio_filt (ndarray): [description]
-        diameter (int): [description]
-        fs (int): [description]
-        ave (int): [description]
+        audio (np.ndarray): Acoustic signal to be plotted.
+        diameter (int): Diameter of the nozzle used in the title of the plot.
+        fs (int): The sampling frequency
+        *args[ave (int)]: Average frequency of the acoustic signal.
     """
 
-    plt.text(14, 9500, 'Mean Frequency: {} Hz'.format(int(ave)), size=9,
+    plt.text(14, 9500, 'Mean Frequency: {} Hz'.format(int(args[0])), size=9,
              bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False)
              )
     plt.title('Spectrogram [Diameter of nozzle: {} mm]'.format(diameter))
     plt.xlabel('Time [s]')
     plt.ylabel('Freq. [Hz]')
-    plt.specgram(audio_filt, Fs=fs, cmap='jet', NFFT=1024)
+    plt.specgram(audio, Fs=fs, cmap='jet', NFFT=1024)
     plt.ylim(0, 10000)
     plt.yticks(np.arange(0, 10000, 1000))
     # plt.axhline(ave, color='r', alpha=0, label="Freq. Média: {} Hz".format(ave))
@@ -201,23 +221,22 @@ def plot_spectrogram(audio_filt, diameter, fs, ave):
     plt.show()
 
 
-def videogram(audio, audio_filt, fs, fps=30, btr=3500):
-    """
+def videogram(audio: np.ndarray, audio_filt: np.ndarray, fs: int, fps: int = 30, btr: int = 3500):
+    """Create an animated spectrogram along with the acoustic signal using the FFmpeg command.
+
     Args:
-        audio (ndarray): [description]
-        audio_filt (ndarray): [description]
-        fs (int): [description]
-        fps (int, optional): [description]. Defaults to 30.
-        btr (int, optional): [description]. Defaults to 3500.
+        audio (ndarray): Original acoustic signal.
+        audio_filt (ndarray): Clean acoustic signal.
+        fs (int): Sampling frequency.
+        fps (int, optional): Number of frames per second to create the video. Defaults to 30.
+        btr (int, optional): Bit rate to create the video. Defaults to 3500.
     """
 
     # Saving the audio file
     wavfile.write("cutted.wav", fs, audio)
-
     FFMpegWriter = animation.writers['ffmpeg']
-    metadata = dict(title='Spectrogram Animation',
-                    artist='adejonghm', comment='LACMAM/POLI-USP')
-    writer = FFMpegWriter(fps=fps, bitrate=btr, metadata=metadata)
+    writer = FFMpegWriter(fps=fps, bitrate=btr, metadata=dict(
+        title='Spectrogram Animation', artist='adejonghm', comment='LACMAM/POLI-USP'))
 
     duration = len(audio_filt) / fs
     freqs = np.fft.fftfreq(audio_filt.shape[0], 1/fs) / 1000
@@ -271,18 +290,17 @@ def videogram(audio, audio_filt, fs, fps=30, btr=3500):
     os.system("rm cutted.wav")
 
 
-def create_signal(frequency, deltha, time, amplitude=1):
-
-    """[summary]
+def create_signal(frequency: int, deltha: float, time: np.ndarray, amplitude: float = 1) -> np.ndarray:
+    """Create an audio signal.
 
     Args:
-        frequency ([type]): [description]
-        deltha ([type]): [description]
-        time ([type]): [description]
-        amplitude (int, optional): [description]. Defaults to 1.
+        frequency (int): Frequency used to create the signal.
+        deltha (float): The decay factor of the signal.
+        time (np.ndarray): Time vector.
+        amplitude (float, optional): Amplitude of the signal. Defaults to 1.
 
     Returns:
-        [type]: [description]
+        np.ndarray: The acoustic signal.
     """
 
     omega = 2 * np.pi * frequency
