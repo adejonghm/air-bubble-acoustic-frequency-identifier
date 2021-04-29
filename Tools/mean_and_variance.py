@@ -22,6 +22,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--file", required=True, help="path to the input JSON file")
     args = vars(ap.parse_args())
+    input_path = ''
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
         input_path = args['file']
@@ -45,8 +46,9 @@ if __name__ == "__main__":
 
     ## CALCULATE VARIANZE AND MEAN
     radii = np.array(radii_file['radii_from_images'])
-    mean = np.mean(radii)
-    variance = np.var(radii)
+    mean = float(np.mean(radii))
+    variance = float(np.var(radii))
+    print(type(variance))
     print('Nozzle:', diameter, "mm")
     print('Mean:', round(mean, 3))
     print('Variance:', round(variance, 3))

@@ -41,6 +41,7 @@ if __name__ == "__main__":
     ap.add_argument("-f", "--file", required=True,
                     help="path to the input JSON file")
     args = vars(ap.parse_args())
+    input_path = ''
 
     if args['file'].endswith('.json') and os.path.exists(args['file']):
         input_path = args['file']
@@ -83,7 +84,7 @@ if __name__ == "__main__":
     speed_deformation = []
     frequencies = []
     Eo = []
-    Re = [] 
+    Re = []
     k = 0
     index, _ = bw_images_list[k].split('.')[0].split('-')
 
@@ -100,7 +101,7 @@ if __name__ == "__main__":
         step = 5
 
         #### PLOTTING THE FFT OF A BUBBLE
-        # plt.title('Frequency Domain [Diameter of nozzle: {} mm]'.format(diameter))
+        plt.title('Frequency Domain [Diameter of nozzle: {} mm]'.format(diameter))
         plt.xlabel('Freq. [Hz]')
         plt.ylabel('Amplitude')
         plt.plot(f_axis, fast_fourier_transform, marker='.')
@@ -129,17 +130,17 @@ if __name__ == "__main__":
         #     local_max = np.array([dist_transform[x, y] for x, y in coord_local_max])
         #     mean_local_max = np.mean(local_max)
 
-        #     ### Average Deformation Rate 
+        #     ### Average Deformation Rate
         #     speed_deformation.append(mean_local_max / (6e-2 * step))
 
-        #     ### Getting The Next Image -> ARREGLAR EL FIN DE LISTA PARA Q (K + STEP) NO SEA MAYOR Q LA LISTA
+        #     ### Getting The Next Image
         #     k += step + 1
         #     if k < len(bw_images_list):
         #         index, _ = bw_images_list[k].split('.')[0].split('-')
         #     else:
         #         break
 
-        # mean_speed_deformation = np.mean(speed_deformation)
+        # mean_speed_deformation = float(np.mean(speed_deformation))
         # Eo.append(round(dsp.get_eotvos(radius), 3))
         # Re.append(round(dsp.get_reynolds(radius, mean_speed_deformation), 3))
 
@@ -147,12 +148,12 @@ if __name__ == "__main__":
     mean_freqs = np.mean(frequencies)
     plt.text(1338, 518, 'Frequência Média: {} Hz'.format(int(mean_freqs)), size=9,
              bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False))
-    
+
     # dsp.plot_signal_bubbles(wave_filtered, beginnings, size, diameter)
 
     # dsp.plot_spectrogram(wave_filtered, Fs, mean_freqs, diameter)
 
-    # dsp.plot_signal(wave_filtered, diameter, time)#, Fs, beginnings)
+    # dsp.plot_signal(wave_filtered, diameter, time, beginnings, Fs)
 
     # dsp.videogram(wave, wave_filtered, Fs)
 
@@ -167,5 +168,5 @@ if __name__ == "__main__":
     # plt.plot(Eo, Re, 'o', label='Diameter of the nozzle: {} mm'.format(diameter))
     # plt.ticklabel_format(axis="y", style="plain", scilimits=(0, 0))
     # plt.legend(loc='upper center')
-    
+
     plt.show()

@@ -7,7 +7,7 @@ Dev: 	adejonghm
 
 This Matlab code implements an edge-based active contour model as
 an application of the Distance Regularized Level Set Evolution (DRLSE)
-formulation in Li et al's paper: 
+formulation in Li et al's paper:
 
 C. Li, C. Xu, C. Gui, M. D. Fox, IEEE Trans. Image Processing, vol. 19 (12), pp.3243-3254, 2010.
 """
