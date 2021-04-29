@@ -5,7 +5,7 @@
 
 ## Table of Contents
 
-- [Description of the content](#description)
+- [Description of the content](#description-of-the-content)
 - [How to use this repository](#how-to-use)
 - [References](#references)
 - [Author Info](#author-info)
