@@ -89,7 +89,7 @@ All the libraries used can be installed using PyPI or it can be installed used t
 
 [3] Zhang, D. & Lu, G. *Shape-based image retrieval using generic Fourier descriptor*. Signal Processing: Image Communication, vol. 17, p. 825–848, 2002
 
-[![DOI](https://zenodo.org/badge/218679128.svg)](https://zenodo.org/badge/latestdoi/218679128)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4662167.svg)](https://doi.org/10.5281/zenodo.4662167)
 
 [Back To The Top](#table-of-contents)
 
