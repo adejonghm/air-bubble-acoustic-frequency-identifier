@@ -34,7 +34,7 @@ In this folder, there are some scripts that can be used to rename files, create 
 
 &nbsp;
 
-![Spectrogam Animation](spectrogram.jpg)
+![Spectrogam Animation](spectrogram.png)
   
 > In this work, some techniques were applied to achieve a reproduction of the acoustic signal on its respective spectrogram. [Here](https://www.youtube.com/watch?v=5NxO0AbnMZE) is the video.
 

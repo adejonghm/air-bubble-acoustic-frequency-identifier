@@ -25,20 +25,20 @@ plt.rcParams['figure.dpi'] = 100.0
 plt.rcParams['figure.figsize'] = (4.14, 2.97)
 
 
-def get_image_contours(image: np.ndarray, ctr_param: np.ndarray, fig_title: str = None):
+def get_image_contours(image: np.ndarray, ctr: np.ndarray, fig_title: str = None, color: str = 'r'):
     """Display the contours of an object over an image.
 
     Args:
         image (ndarray): Image like 2-D array for grayscale or 3-D array for RGB image.
-        ctr_param (ndarray): Function used to calculate and show the contours.
+        ctr (ndarray): Object to which the contour will be found.
         fig_title (str, optional): Title of the figure. Defaults to None.
     """
 
     plt.title(fig_title)
     plt.imshow(image)
-    contours = measure.find_contours(ctr_param, 0)
+    contours = measure.find_contours(ctr, 0)
     for contour in contours:
-        plt.plot(contour[:, 1], contour[:, 0], color='r', linewidth=1.5)
+        plt.plot(contour[:, 1], contour[:, 0], color=color, linewidth=1.5)
 
 
 def get_centroid(image: np.ndarray) -> tuple:
