@@ -21,8 +21,6 @@ from matplotlib.ticker import FuncFormatter
 from scipy.io import wavfile
 from tqdm import tqdm
 
-# Local application imports
-
 
 def clear():
     """Clear the terminal"""
@@ -145,15 +143,17 @@ def get_reynolds(radius: float, v_rel: float, scale_factor: float = 0.3846) -> f
     return (rho * v_rel * radius * 2) / mu
 
 
-def plot_signal(audio: np.ndarray, diameter: int, time: np.ndarray, *args):
+def plot_signal(audio: np.ndarray, diameter: int, time: np.ndarray, *args, dashed: bool = False):
     """Display an acoustic signal as a function of time.
 
     Args:
         audio (np.ndarray): Acoustic signal to be plotted.
         diameter (int): Diameter of the nozzle used in the title of the plot.
         time (np.ndarray): Time vector over which the acoustic signal is represented.
-        *args[begs (list), Fs (int)]: 'Fs' is the sampling frequency and
-                                      'begs' are the beginnings of the bubbles.
+        dashed (bool): Variable to place or not the dashed lines in the graph
+                       delimiting the beginning and end.
+        *args[begs (list), Fs (int)]: 'begs' are the beginnings of the bubbles.
+                                      'Fs' is the sampling frequency and
     """
 
     plt.title('Time Domain Signal [Diameter of nozzle: {} mm]'.
@@ -163,8 +163,9 @@ def plot_signal(audio: np.ndarray, diameter: int, time: np.ndarray, *args):
     plt.ylim(-4000, 4000)
     plt.plot(time, audio)
 
-    for e in args[0]:
-        plt.axvline(e / args[1], color='r', linestyle='--')
+    if dashed:
+        for e in args[0]:
+            plt.axvline(e / args[1], color='r', linestyle='--')
 
     plt.grid()
     plt.show()
@@ -204,15 +205,15 @@ def plot_spectrogram(audio: np.ndarray, diameter: int, fs: int, *args):
         *args[ave (int)]: Average frequency of the acoustic signal.
     """
 
-    plt.text(14, 9500, 'Mean Frequency: {} Hz'.format(int(args[0])), size=9,
-             bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False)
-             )
+    if len(args) != 0:
+        plt.text(12.6, 6650, 'Mean Frequency: {} Hz'.format(int(args[0])), size=9,
+                 bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False))
     plt.title('Spectrogram [Diameter of nozzle: {} mm]'.format(diameter))
     plt.xlabel('Time [s]')
     plt.ylabel('Freq. [Hz]')
     plt.specgram(audio, Fs=fs, cmap='jet', NFFT=1024)
-    plt.ylim(0, 10000)
-    plt.yticks(np.arange(0, 10000, 1000))
+    plt.ylim(100, 7000)
+    # plt.yticks(np.arange(0, 10000, 1000))
     # plt.axhline(ave, color='r', alpha=0, label="Freq. Média: {} Hz".format(ave))
 
     cbar = plt.colorbar()
@@ -290,7 +291,7 @@ def videogram(audio: np.ndarray, audio_filt: np.ndarray, fs: int, fps: int = 30,
     os.system("rm cutted.wav")
 
 
-def create_signal(frequency: int, deltha: float, time: np.ndarray, amplitude: float = 1) -> np.ndarray:
+def create_signal(freq: int, deltha: float, time: np.ndarray, amplitude: float = 1) -> np.ndarray:
     """Create an audio signal.
 
     Args:
@@ -303,5 +304,5 @@ def create_signal(frequency: int, deltha: float, time: np.ndarray, amplitude: fl
         np.ndarray: The acoustic signal.
     """
 
-    omega = 2 * np.pi * frequency
-    return amplitude * np.cos(omega * time) * np.exp(-np.pi * deltha * frequency * time)
+    omega = 2 * np.pi * freq
+    return amplitude * np.cos(omega * time) * np.exp(-np.pi * deltha * freq * time)
