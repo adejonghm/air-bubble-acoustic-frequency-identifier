@@ -170,9 +170,8 @@ if __name__ == "__main__":
                            format(bw_frames_path, short_name_frame, selected), bw_image)
 
                 ## SHOW MESSAGE ##
-                print(
-                    'Image {0} for nozzle diameter {1} mm was segmented.'.
-                    format(short_name_frame, diameter))
+                print('Image {} for nozzle diameter {} mm was segmented.'.
+                      format(short_name_frame, diameter))
         else:
             pass
     # ## ENDFOR ##

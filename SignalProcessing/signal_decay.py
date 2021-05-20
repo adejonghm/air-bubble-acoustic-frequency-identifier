@@ -112,9 +112,10 @@ if __name__ == '__main__':
     plt.figure()
     plt.plot(t, real_signal, linewidth=1, label='real')
 
-    # plt.title('Signal')
+    plt.title('Signal {}'.format(diameter))
     plt.plot(t, ideal_signal, linewidth=1, label=f'ideal, with delta={round(lmda_effective, 5)}')
-    plt.xlabel('Seconds')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Amplitude')
     plt.legend()
     plt.grid()
 
