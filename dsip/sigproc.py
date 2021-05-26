@@ -41,7 +41,7 @@ def get_bubble(audio: np.ndarray, start: int, size: int, fs: int = 48000) -> tup
         fs (int, optional): Sampling frequency. Defaults to 48000.
 
     Returns:
-        tuple: The signal and its time length.
+        tuple: The signal and its duration in milliseconds.
     """
 
     bubble = audio[start: start + size]
@@ -50,7 +50,7 @@ def get_bubble(audio: np.ndarray, start: int, size: int, fs: int = 48000) -> tup
     return (bubble, bubble_time)
 
 
-def get_max_values(audio: np.ndarray, size: int, max_value: int = 8000) -> list:
+def get_peaks(audio: np.ndarray, size: int, max_value: int = 8000) -> list:
     """Determine the amplitude values that are higher than a given value,
     which will be taken as maximum amplitude values in the audio.
 
@@ -206,18 +206,18 @@ def plot_spectrogram(audio: np.ndarray, diameter: int, fs: int, *args):
     """
 
     if len(args) != 0:
-        plt.text(12.6, 6650, 'Mean Frequency: {} Hz'.format(int(args[0])), size=9,
-                 bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), fill=False))
+        plt.text(16.05, 6840, 'Frequência Média: {} Hz'.format(int(args[0])), size=9,
+                 bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), facecolor=(1, 1, 1)))
     plt.title('Spectrogram [Diameter of nozzle: {} mm]'.format(diameter))
-    plt.xlabel('Time [s]')
+    plt.xlabel('Tempo [s]')
     plt.ylabel('Freq. [Hz]')
     plt.specgram(audio, Fs=fs, cmap='jet', NFFT=1024)
     plt.ylim(100, 7000)
     # plt.yticks(np.arange(0, 10000, 1000))
     # plt.axhline(ave, color='r', alpha=0, label="Freq. Média: {} Hz".format(ave))
-
-    cbar = plt.colorbar()
-    cbar.set_label('rel to.')
+    plt.colorbar()
+    # cbar = plt.colorbar()
+    # cbar.set_label('rel to.')
     # cbar.set_ticks([])
     plt.show()
 
@@ -306,3 +306,25 @@ def create_signal(freq: int, deltha: float, time: np.ndarray, amplitude: float =
 
     omega = 2 * np.pi * freq
     return amplitude * np.cos(omega * time) * np.exp(-np.pi * deltha * freq * time)
+
+
+def frequency_classifier(freqs: list) -> tuple:
+    """Classify frequencies by scenario.
+
+    Args:
+        freqs (list): List of frequencies to be classified.
+
+    Returns:
+        tuple: Number of frequencies for each scenario.
+    """
+
+    c1, c2, c3 = 0, 0, 0
+    for f in freqs:
+        if 700 < f < 800:
+            c1 += 1
+        elif 800 < f < 1100:
+            c2 += 1
+        elif 1100 < f < 1200:
+            c3 += 1
+
+    return (c1, c2, c3)
