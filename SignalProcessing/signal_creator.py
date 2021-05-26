@@ -56,12 +56,4 @@ if __name__ == "__main__":
     plt.xlabel('Time (s)')
     plt.xticks(np.arange(0, 6, 0.5))
 
-    plt.figure()
-    plt.xlabel('Time (s)')
-    plt.ylabel('Freq. [Hz]')
-    plt.specgram(signal, Fs=Fs, cmap='jet')
-    plt.ylim(0, 20000)
-    cbar = plt.colorbar()
-    # cbar.set_label('rel to.')
-
     plt.show()
