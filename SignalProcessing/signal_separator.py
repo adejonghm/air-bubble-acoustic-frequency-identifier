@@ -65,7 +65,7 @@ if __name__ == "__main__":
     Fs, wave = wavfile.read(audio_path)
 
     # .:: CUTTING SIGNAL THAT MATCHES THE VIDEO ::.
-    # max_values = dsp.get_max_values(wave, size)
+    # max_values = dsp.get_peaks(wave, size)
     # wave_cutted = wave[max_values[0]:max_values[-1]]
 
     # .:: FILTERING THE SIGNAL ::.
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     wave_filtered = signal.sosfilt(sos, wave)
 
     # .:: GETTING STAR OF EACH BUBBLE ::.
-    points = np.array(dsp.get_max_values(wave_filtered, size, max_value=1000))
+    points = np.array(dsp.get_peaks(wave_filtered, size, max_value=1000))
     points = points[1:-1]
 
     # correcting start bubble
