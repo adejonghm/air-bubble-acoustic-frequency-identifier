@@ -5,15 +5,12 @@
 Dev: 	adejonghm
 ----------
 
-Classifier:
-    script to detect the fundamental frequencies of an acoustic signal and classify it
-    according to its size.
 
 """
 
 # Standard library imports
 import argparse
-import sys
+# import sys
 
 # Third party imports
 import numpy as np
@@ -24,25 +21,6 @@ from scipy.fftpack import fft, fftfreq
 from dsip import sigproc as dsp
 
 
-def classifier(freqs: list) -> list:
-    """
-    Function to classify the existing frequencies in the acoustic signal.
-    """
-    c1 = 0
-    c2 = 0
-    c3 = 0
-
-    for f in freqs:
-        if 700 < f < 800:
-            c1 += 1
-        elif 800 < f < 1100:
-            c2 += 1
-        elif 1100 < f < 1200:
-            c3 += 1
-
-    return [c1, c2, c3]
-
-
 if __name__ == "__main__":
 
     #### CONSTRUCT ARGUMENT PARSE ####
@@ -51,72 +29,52 @@ if __name__ == "__main__":
                     help="use the option (--option plot) to display the plots.")
     args = vars(ap.parse_args())
 
-    # CREATING A SIGNAL
+    signal = np.loadtxt('signal_1.csv')
+    vol = 0
     Fs = 48000
-    length = 4500
-    Ts = 1 / Fs
-    time = np.arange(0, length / Fs, Ts)
+    frequencies = []
+    bubble_length = 4500
+    time = len(signal) / Fs
 
-    signal_a = dsp.create_signal(714, 0.08821, time, 3727.213)
-    signal_b = dsp.create_signal(970, 0.02584, time, 1149.612)
-    signal_c = dsp.create_signal(1109, 0.03673, time, 1086.202)
-    signal_d = dsp.create_signal(928, 0.02584, time, 1082.014)
+    peaks = dsp.get_peaks(signal, bubble_length, max_value=800)
 
-    signal = signal_a + signal_b + signal_c + signal_d
+    for i, peak in enumerate(peaks):
+        bubble, _ = dsp.get_bubble(signal, peak, bubble_length, fs=Fs)
+        fast_fourier_transform = abs(fft(2 * bubble) / bubble_length)
+        position = np.where(fast_fourier_transform ==
+                            max(fast_fourier_transform))
+        f_axis = fftfreq(bubble_length) * Fs
+        freq = int(f_axis[position[0][0]])
+        frequencies.append(freq)
 
-    fast_fourier_transform = abs(fft(2 * signal) / len(signal))
-    f_axis = fftfreq(len(signal)) * Fs
+        # radius in mm
+        r = dsp.get_radius(freq) * 1000
 
-    n_fft = len(fast_fourier_transform) // 2
-    max_values_positions = []
-    value = 0
-    flag = True
+        # volume in mm^3
+        vol += (4 * np.pi * np.power(r, 3)) / 3
 
-    for i in range(n_fft):
-        item = fast_fourier_transform[i]
-        next_item = fast_fourier_transform[i + 1]
-        if flag:
-            if item < next_item:
-                value = next_item
-            else:
-                max_values_positions.append(i)
-                flag = False
-        else:
-            if item > next_item:
-                value = 0
-            else:
-                flag = True
-    frequencies = [int(f_axis[i]) for i in max_values_positions]
-    bub_by_scen = classifier(frequencies)
-
-    if args['option'] is None:
-        print('----' * 8)
-        print(' ' * 12, 'Total Bubbles')
-        print('----' * 8)
-        print('Scenario #1 \t {}'.format(bub_by_scen[0]))
-        print('----' * 8)
-        print('Scenario #2 \t {}'.format(bub_by_scen[1]))
-        print('----' * 8)
-        print('Scenario #3 \t {}'.format(bub_by_scen[2]))
-        print('----' * 8)
-        print('* You can use "--option plot" to display the FFT graph.')
-    elif args['option'] == 'plot':
-        plt.xlabel('Freq. [Hz]')
-        plt.ylabel('Amplitude')
-        plt.xlim(0, 4000)
-        plt.yticks(np.arange(0, 270, 25))
         plt.plot(f_axis, fast_fourier_transform,
-                 linewidth=0.8)  # , marker='.')
+                 marker='.', label='{} Hz'.format(freq))
+        plt.xlim(500, 1500)
 
-        # start = np.zeros(500, dtype=float)
 
-        # long_signal = np.concatenate((start, signal), axis=None)
-        # long_time = np.arange(0, len(long_signal)) / Fs
+    scenarios = dsp.frequency_classifier(frequencies)
+    print('Leak = {} mm³/s'.format(np.round(vol / time, 2)))
+    print('Scenario |', 'Bubbles')
+    print('-' * 18)
+    for i, item in enumerate(scenarios):
+        print(' '*3, f'{1 + i}', ' '*2, '|', ' '*2, f'{item}')
 
-        # plt.xlabel('Seg.')
-        # plt.ylabel('Amplitude')
-        # plt.plot(long_time, long_signal)
-        plt.show()
-    else:
-        print('Use --help to show options or not use any option')
-        sys.exit(1)
+    plt.legend(loc='upper right')
+    plt.xlabel('Freq. [Hz]')
+    plt.ylabel('Amplitude')
+
+    plt.figure()
+    plt.xlabel('Time (s)')
+    plt.ylabel('Freq. [Hz]')
+    plt.specgram(signal, Fs=Fs, cmap='jet')
+    plt.ylim(0, 20000)
+    plt.colorbar()
+    # cbar = plt.colorbar()
+    # cbar.set_label('rel to.')
+    plt.show()
