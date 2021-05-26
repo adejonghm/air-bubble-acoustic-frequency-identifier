@@ -51,6 +51,7 @@ if __name__ == "__main__":
     for i in range(1, 4):
         f_axis = []
         frequencies = []
+        f_bins = []
         node = dataset[i]
         audio_path = dataset[0]['path'] + node['path'] + node['audioCutted']
         beginnings = node['bubblesStart']
@@ -83,42 +84,40 @@ if __name__ == "__main__":
             freq = int(f_axis[position])
             radius = dsp.get_radius(freq)
 
-            frequencies.append(fast_fourier_transform)
+            f_bins.append(fast_fourier_transform)
+            frequencies.append(freq)
 
         #### MEAN FREQUENCIES ####
-        mean = np.mean(frequencies, axis=0)
-        v_max = mean.max()
-        p_max = mean.tolist().index(v_max)
+        mean_freq = np.mean(frequencies)
+        mean_bins = np.mean(f_bins, axis=0)
+        v_max = mean_bins.max()
+        p_max = mean_bins.tolist().index(v_max)
         f_max = f_axis[p_max]
 
         #### FFT LABELS ####
         if diameter == 2:
-            label ='diâmetro do bocal: {}.5 mm'.format(diameter)
+            label = 'Diameter of the nozzle: {}.5 mm'.format(diameter)
         else:
-            label ='diâmetro do bocal: {}.0 mm'.format(diameter)
+            label = 'Diameter of the nozzle: {}.0 mm'.format(diameter)
 
-        plt.plot(f_axis, mean, marker='.', label=label)
+        plt.plot(f_axis, mean_bins, marker='.', label=label)
         plt.xlim(500, 1300)
         plt.ylim(0, 550)
-        plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(f_max)), fontweight=550)
+        plt.text(f_max-10, v_max + 15, '{} Hz'.format(int(mean_freq)), fontweight=550)
         plt.text(f_max-1, v_max, '|')
 
         #### GRACE DIAGRAM LABELS ####
-        # if diameter == 2:
-        #     label = 'Diameter of the nozzle: {}.5 mm'.format(diameter)
-        # else:
-        #     label = 'Diameter of the nozzle: {}.0 mm'.format(diameter)
         # plt.plot(Eo, Re, 'h', label=label)
+
+    #### MEAN FREQUENCIES ####
+    plt.title('Mean Frequency of each Acoustic Signal')
+    plt.xlabel('Frequência [Hz]')
+    plt.ylabel('Amplitude')
 
     #### GRACE DIAGRAM ####
     # plt.title("Grace Diagram")
     # plt.xlabel('Eötvös Numbers (Eo)')
     # plt.ylabel('Reynolds Numbers (Re)')
-
-    #### MEAN FREQUENCIES ####
-    # plt.title('Mean Frequency of each Acoustic Signal')
-    plt.xlabel('Frequência [Hz]')
-    plt.ylabel('Amplitude')
 
     plt.legend(loc='best')
     plt.show()
