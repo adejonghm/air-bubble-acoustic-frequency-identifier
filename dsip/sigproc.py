@@ -328,3 +328,25 @@ def frequency_classifier(freqs: list) -> tuple:
             c3 += 1
 
     return (c1, c2, c3)
+
+
+def create_random_stage(source: dict, n: int) -> list:
+    """Create a random sub-stage with N elements from an initial set.
+
+    Args:
+        source (dict): Original set of elements.
+        n (int): Number of elements to be selected.
+
+    Returns:
+        list: Stage with the elements selected according to
+              the positions obtained. Maintains the order of the input set.
+    """
+
+    stage_elements = []
+    positions = np.random.randint(0, len(source['frequencies']), size=n)
+
+    for elements in source.values():
+        if isinstance(elements, list):
+            stage_elements.append([elements[i] for i in positions])
+
+    return stage_elements
