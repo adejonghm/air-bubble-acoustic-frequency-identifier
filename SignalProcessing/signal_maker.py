@@ -5,7 +5,7 @@
 Dev: 	adejonghm
 ----------
 
-Generator of an acoustic signal with random frequencies and its respective values.
+Generator of an acoustic signal with random frequencies taken from the Dataset.
 """
 
 # Standard library imports
@@ -39,34 +39,38 @@ if __name__ == "__main__":
 
     # PARAMETERS
     Fs = 48000
-    bub_length = 4500
+    length_bubble = 4500
     Ts = 1 / Fs
-    bub_time = np.arange(0, bub_length / Fs, Ts)
+    bub_time = np.arange(0, length_bubble / Fs, Ts)
 
-    # CREATE THE BUBBLE SIGNALS
+    # CREATE BUBBLES FROM RANDOM VALUES TAKEN IN EACH STAGE
     bubbles = []
-    stage = np.asarray(dsp.create_random_stage(dataset[0], 9)).T
-    for values in stage:
-        freq, amplitude, vol, delta = values
-        bubbles.append(dsp.create_signal(freq, delta, bub_time, amplitude))
+    freqs_per_stage = [150, 500, 350]
+    total_freqs = sum(freqs_per_stage)
+    for i, n_freqs in enumerate(freqs_per_stage):
+        stage = np.asarray(dsp.create_random_stage(dataset[i], n_freqs)).T
+        for values in stage:
+            freq, amplitude, vol, delta = values
+            bubbles.append(dsp.create_signal(freq, delta, bub_time, amplitude))
 
     # CREATE THE SIGNAL VECTOR
-    length_signal = int(Fs * 5.6)
+    length_signal = Fs * 10
     signal = np.random.standard_normal(size=length_signal)
     time = np.arange(0, len(signal) / Fs, Ts)
 
-    # REPLACING WITH THE SIGNAL
-    instants = np.random.uniform(0, 5.6, size=9)
+    # REPLACING BUBBLES IN THE SIGNAL
+    high_value = (length_signal - length_bubble) / Fs
+    instants = np.random.uniform(0, high_value, size=total_freqs)
 
     for i, item in enumerate(instants):
         t = int(Fs * item)
-        signal[t: t + bub_length] += bubbles[i]
+        signal[t: t + length_bubble] += np.asarray(bubbles[i])
 
     # SHOW THE SIGNAL
     plt.figure()
-    plt.plot(time, signal)
-    plt.ylabel('Amplitude')
-    plt.xlabel('Time (s)')
-    plt.xticks(np.arange(0, 6, 0.5))
+    dsp.plot_signal(signal, time, 0)
+
+    plt.figure()
+    dsp.plot_spectrogram(signal, Fs, 0)
 
     plt.show()
