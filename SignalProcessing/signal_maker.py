@@ -45,26 +45,35 @@ if __name__ == "__main__":
 
     # CREATE BUBBLES FROM RANDOM VALUES TAKEN IN EACH STAGE
     bubbles = []
+    volumes = []
     freqs_per_stage = [150, 500, 350]
     total_freqs = sum(freqs_per_stage)
     for i, n_freqs in enumerate(freqs_per_stage):
         stage = np.asarray(dsp.create_random_stage(dataset[i], n_freqs)).T
+        vol = np.sum(stage[:, 2])
+        volumes.append(np.round(vol, 2))
         for values in stage:
-            freq, amplitude, vol, delta = values
+            freq, amplitude, _, delta = values
             bubbles.append(dsp.create_signal(freq, delta, bub_time, amplitude))
 
-    # CREATE THE SIGNAL VECTOR
-    length_signal = Fs * 10
+    # CREATE THE SIGNAL VECTOR WITH WHITE NOISE
+    seconds = 10
+    length_signal = Fs * seconds
     signal = np.random.standard_normal(size=length_signal)
     time = np.arange(0, len(signal) / Fs, Ts)
 
-    # REPLACING BUBBLES IN THE SIGNAL
+    # CREATE RANDOM TIME INSTANTS
     high_value = (length_signal - length_bubble) / Fs
     instants = np.random.uniform(0, high_value, size=total_freqs)
 
+    # REPLACING BUBBLES IN THE SIGNAL
     for i, item in enumerate(instants):
         t = int(Fs * item)
         signal[t: t + length_bubble] += np.asarray(bubbles[i])
+
+    # ESTIMATING LEAK
+    leak = np.sum(volumes) / seconds
+    print('Leak: {} mm^3/s'.format(np.round(leak, 2)))
 
     # SHOW THE SIGNAL
     plt.figure()
