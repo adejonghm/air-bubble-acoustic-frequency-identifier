@@ -103,5 +103,4 @@ All the libraries used can be installed using PyPI or it can be installed used t
 
 - CodersRank: [adejonghm](https://profile.codersrank.io/user/adejonghm/)
 
-
 [Back To The Top](#table-of-contents)
