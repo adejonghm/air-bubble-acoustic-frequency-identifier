@@ -143,32 +143,31 @@ def get_reynolds(radius: float, v_rel: float, scale_factor: float = 0.3846) -> f
     return (rho * v_rel * radius * 2) / mu
 
 
-def plot_signal(audio: np.ndarray, diameter: int, time: np.ndarray, *args, dashed: bool = False):
+def plot_signal(audio: np.ndarray, time: np.ndarray, diameter: int, *args, dashed: bool = False):
     """Display an acoustic signal as a function of time.
 
     Args:
         audio (np.ndarray): Acoustic signal to be plotted.
-        diameter (int): Diameter of the nozzle used in the title of the plot.
         time (np.ndarray): Time vector over which the acoustic signal is represented.
+        diameter (int): Diameter of the nozzle used in the title of the plot.
         dashed (bool): Variable to place or not the dashed lines in the graph
                        delimiting the beginning and end.
         *args[begs (list), Fs (int)]: 'begs' are the beginnings of the bubbles.
                                       'Fs' is the sampling frequency and
     """
-
-    plt.title('Time Domain Signal [Diameter of nozzle: {} mm]'.
-              format(diameter))
+    if diameter !=0:
+        plt.title('Time Domain Signal [Diameter of nozzle: {} mm]'.format(diameter))
     plt.xlabel('Segundos (s)')
     plt.ylabel('Amplitude')
     plt.ylim(-4000, 4000)
     plt.plot(time, audio)
+    plt.xticks(np.arange(0, 11, 1))
 
     if dashed:
         for e in args[0]:
             plt.axvline(e / args[1], color='r', linestyle='--')
 
     plt.grid()
-    plt.show()
 
 
 def plot_signal_bubbles(audio: np.ndarray, begs: list, size: int, diameter: int):
@@ -192,34 +191,34 @@ def plot_signal_bubbles(audio: np.ndarray, begs: list, size: int, diameter: int)
         plt.xticks(np.arange(0, 100, 5))
 
     plt.grid()
-    plt.show()
 
 
-def plot_spectrogram(audio: np.ndarray, diameter: int, fs: int, *args):
+def plot_spectrogram(audio: np.ndarray, fs: int, diameter: int, *args):
     """Display the sprectrogram of the acoustic signal.
 
     Args:
         audio (np.ndarray): Acoustic signal to be plotted.
-        diameter (int): Diameter of the nozzle used in the title of the plot.
         fs (int): The sampling frequency
+        diameter (int): Diameter of the nozzle used in the title of the plot.
         *args[ave (int)]: Average frequency of the acoustic signal.
     """
 
     if len(args) != 0:
         plt.text(16.05, 6840, 'Frequência Média: {} Hz'.format(int(args[0])), size=9,
                  bbox=dict(boxstyle="round", edgecolor=(0.5, 0.5, 0.5), facecolor=(1, 1, 1)))
-    plt.title('Spectrogram [Diameter of nozzle: {} mm]'.format(diameter))
+    if diameter !=0:
+        plt.title('Spectrogram [Diameter of nozzle: {} mm]'.format(diameter))
     plt.xlabel('Tempo [s]')
     plt.ylabel('Freq. [Hz]')
-    plt.specgram(audio, Fs=fs, cmap='jet', NFFT=1024)
-    plt.ylim(100, 7000)
+    plt.specgram(audio, Fs=fs, cmap='jet', NFFT=256)
+    plt.ylim(100, 3500)
+    plt.xticks(np.arange(0, 11, 1))
     # plt.yticks(np.arange(0, 10000, 1000))
     # plt.axhline(ave, color='r', alpha=0, label="Freq. Média: {} Hz".format(ave))
     plt.colorbar()
     # cbar = plt.colorbar()
     # cbar.set_label('rel to.')
     # cbar.set_ticks([])
-    plt.show()
 
 
 def videogram(audio: np.ndarray, audio_filt: np.ndarray, fs: int, fps: int = 30, btr: int = 3500):
