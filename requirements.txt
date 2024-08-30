@@ -11,7 +11,7 @@ matplotlib==3.4.1
 mccabe==0.6.1
 networkx==2.5.1
 numpy==1.22.0
-opencv-python==4.5.1.48
+opencv-python==4.8.1.78
 pandas==1.2.4
 Pillow==10.3.0
 pycodestyle==2.7.0
